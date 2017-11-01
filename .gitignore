@@ -1,0 +1,13 @@
+# Build
+build/
+
+# Gradle
+.gradle/
+gradle/
+
+# IDEA
+.idea/
+*.iml
+
+# Game
+settings.json
