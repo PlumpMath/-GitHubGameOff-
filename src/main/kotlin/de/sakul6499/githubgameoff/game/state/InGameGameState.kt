@@ -1,6 +1,7 @@
-package de.sakul6499.githubgameoff
+package de.sakul6499.githubgameoff.game.state
 
-import de.sakul6499.githubgameoff.gui.Button
+import de.sakul6499.githubgameoff.game.GameMain
+import de.sakul6499.githubgameoff.game.gui.Button
 import java.awt.Color
 import java.awt.Graphics
 

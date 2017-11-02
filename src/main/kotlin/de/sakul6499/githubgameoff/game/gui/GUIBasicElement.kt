@@ -1,4 +1,4 @@
-package de.sakul6499.githubgameoff.gui
+package de.sakul6499.githubgameoff.game.gui
 
 abstract class GUIBasicElement(var x: Double, var y: Double, var sizeX: Double, var sizeY: Double) : GUIElement {
     override var active: Boolean = false

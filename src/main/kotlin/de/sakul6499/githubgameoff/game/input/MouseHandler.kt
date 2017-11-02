@@ -1,4 +1,4 @@
-package de.sakul6499.githubgameoff
+package de.sakul6499.githubgameoff.game.input
 
 import java.awt.Point
 import java.awt.event.*

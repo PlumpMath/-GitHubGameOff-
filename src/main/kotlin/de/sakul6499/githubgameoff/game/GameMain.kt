@@ -1,6 +1,11 @@
-package de.sakul6499.githubgameoff
+package de.sakul6499.githubgameoff.game
 
 import com.google.gson.Gson
+import de.sakul6499.githubgameoff.game.input.ControllerHandler
+import de.sakul6499.githubgameoff.game.input.InputHandler
+import de.sakul6499.githubgameoff.game.input.MouseHandler
+import de.sakul6499.githubgameoff.game.state.GameStateManager
+import de.sakul6499.githubgameoff.game.state.InGameGameState
 import java.awt.*
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -61,7 +66,7 @@ class GameMain {
         // ###
         println("Setting up listeners ...")
         frame.addWindowListener(object : WindowAdapter() {
-            override fun windowClosed(e: WindowEvent?) {
+            override fun windowClosing(e: WindowEvent?) {
                 stop()
             }
         })

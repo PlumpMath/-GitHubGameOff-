@@ -1,4 +1,4 @@
-package de.sakul6499.githubgameoff
+package de.sakul6499.githubgameoff.game
 
 import java.awt.Font
 import java.awt.GraphicsEnvironment

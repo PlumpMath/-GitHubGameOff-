@@ -1,4 +1,4 @@
-package de.sakul6499.githubgameoff.gui
+package de.sakul6499.githubgameoff.game.gui
 
 import java.awt.Graphics
 
