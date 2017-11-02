@@ -1,10 +1,7 @@
 package de.sakul6499.githubgameoff
 
 import com.google.gson.Gson
-import java.awt.Dimension
-import java.awt.Graphics2D
-import java.awt.Point
-import java.awt.Toolkit
+import java.awt.*
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.awt.image.BufferStrategy
@@ -59,15 +56,31 @@ class GameMain {
         frame.defaultCloseOperation = JFrame.DISPOSE_ON_CLOSE
         frame.cursor = Toolkit.getDefaultToolkit().createCustomCursor(Toolkit.getDefaultToolkit().getImage(""), Point(0, 0), "emptyCursor")
 
+        // ###
+        // # Listeners
+        // ###
+        println("Setting up listeners ...")
         frame.addWindowListener(object : WindowAdapter() {
             override fun windowClosed(e: WindowEvent?) {
                 stop()
             }
         })
 
+        // Input Listener
+        frame.addKeyListener(InputHandler.instance)
+
+        // Mouse listener
+        frame.addMouseListener(MouseHandler.instance)
+        frame.addMouseWheelListener(MouseHandler.instance)
+        frame.addMouseMotionListener(MouseHandler.instance)
+
+        // Controller
+        ControllerHandler
+
         // ###
         // # Game States
         // ###
+        println("Registering game states ...")
         GameStateManager.instance.registerGameState(InGameGameState(), true)
 
         // ###
@@ -84,7 +97,7 @@ class GameMain {
             var forceRender = false
 
             // defines weather or not the fps limitation for the delta time is used
-            var limitless = false
+            var limitless: Boolean
             var ups = 0
             var fps = 0
 
@@ -105,15 +118,15 @@ class GameMain {
                 // # Update
                 // ###
 
-                // mouse & keyboard & input handler
+                // Controller
+                ControllerHandler.instance.update()
 
+                // Update current game state
                 GameStateManager.instance.updateCurrent(deltaTime)
 
                 ups++
 
                 if (forceRender || deltaTime >= 1) {
-                    if (forceRender) forceRender = false
-
                     if (bufferStrategy == null) {
                         println("Creating buffer strategy!")
 
@@ -127,18 +140,28 @@ class GameMain {
                     // ###
                     // # Draw
                     // ###
+                    // Clear screen
                     graphics.clearRect(0, 0, gameConfig.width, gameConfig.height)
 
+                    // Render current game state
                     GameStateManager.instance.renderCurrent(deltaTime, graphics)
 
-                    // cursor drawing
+                    // Render cursor
+                    graphics.color = if (MouseHandler.PressedAny()) Color.MAGENTA else Color.white
+                    graphics.fillRect(MouseHandler.MousePosition.x, MouseHandler.MousePosition.y, 64, 64)
 
+                    // Finish up
                     graphics.dispose()
                     bufferStrategy.show()
 
                     fps++
-                    deltaTime--
-                    if (deltaTime < 0) deltaTime = 0.0
+
+                    if (forceRender) {
+                        forceRender = false
+                    } else {
+                        deltaTime--
+                        if (deltaTime < 0) deltaTime = 0.0
+                    }
                 }
 
                 if (System.currentTimeMillis() - lastTimer >= 1000) {
@@ -151,11 +174,16 @@ class GameMain {
                     fps = 0
                 }
             }
+
+            println("### INTERRUPTED ###")
+            println("### EXIT ###")
+            ControllerHandler.instance.exit()
         })
     }
 
     fun start() {
         if (thread.isAlive) return
+        println("Starting!")
 
         frame.isVisible = true
         thread.start()
@@ -163,6 +191,7 @@ class GameMain {
 
     fun stop() {
         if (!thread.isAlive) return
+        println("Stopping!")
 
         frame.isVisible = false
         thread.interrupt()
