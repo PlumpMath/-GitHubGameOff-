@@ -1,7 +1,10 @@
 package de.sakul6499.githubgameoff
 
 import com.google.gson.Gson
-import java.awt.*
+import java.awt.Dimension
+import java.awt.Graphics2D
+import java.awt.Point
+import java.awt.Toolkit
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.awt.image.BufferStrategy
@@ -9,9 +12,12 @@ import java.io.File
 import javax.swing.JFrame
 
 class GameMain {
-    private val cwd: File = File(".")
-    private val gameConfigFile: File = File(cwd, "settings.json")
-    private val gameConfig: GameConfig
+    companion object {
+        val cwd: File = File(".")
+        val gameConfigFile: File = File(cwd, "settings.json")
+        lateinit var gameConfig: GameConfig
+            private set
+    }
 
     private val title: String = "#GitHubGameOff"
     private val frame: JFrame = JFrame()
@@ -60,34 +66,49 @@ class GameMain {
         })
 
         // ###
+        // # Game States
+        // ###
+        GameStateManager.instance.registerGameState(InGameGameState(), true)
+
+        // ###
         // # Main Thread
         // ###
         thread = Thread(Runnable {
             var bufferStrategy: BufferStrategy? = null
 
             var lastTime = System.nanoTime()
-            val nsPerTick = 1000000000 / gameConfig.fpsLimit
+            val nsPerTick = 1000000000 / gameConfig.deltaLimit
             var lastTimer = System.currentTimeMillis()
             var deltaTime = 0.0
 
             var forceRender = false
 
+            // defines weather or not the fps limitation for the delta time is used
+            var limitless = false
             var ups = 0
             var fps = 0
 
             while (!Thread.currentThread().isInterrupted) {
+                // ###
+                // # Delta Time
+                // ###
                 val now = System.nanoTime()
                 deltaTime += (now - lastTime) / nsPerTick
-//                println(deltaTime)
-//                if(deltaTime == 0.0) deltaTime = (now - lastTime).toDouble()
+                // if the 'limited calculation' fails [<= 0.0], calculate without limit:
+                limitless = if (deltaTime <= 0.0) {
+                    deltaTime = (now - lastTime).toDouble()
+                    true
+                } else false
                 lastTime = now
 
                 // ###
                 // # Update
                 // ###
 
-//                Thread.sleep(500)
-                // ...
+                // mouse & keyboard & input handler
+
+                GameStateManager.instance.updateCurrent(deltaTime)
+
                 ups++
 
                 if (forceRender || deltaTime >= 1) {
@@ -108,24 +129,23 @@ class GameMain {
                     // ###
                     graphics.clearRect(0, 0, gameConfig.width, gameConfig.height)
 
-                    graphics.color = Color.black
-                    graphics.fillRect(0, 0, gameConfig.width, gameConfig.height)
+                    GameStateManager.instance.renderCurrent(deltaTime, graphics)
 
-                    // game state manager
-                    // mouse & keyboard & input handler + cursor drawing
+                    // cursor drawing
 
                     graphics.dispose()
                     bufferStrategy.show()
 
                     fps++
                     deltaTime--
+                    if (deltaTime < 0) deltaTime = 0.0
                 }
 
                 if (System.currentTimeMillis() - lastTimer >= 1000) {
                     lastTimer += 1000
-//                    forceRender = true
+                    forceRender = true
 
-                    frame.title = "$title [$ups UPS|FPS $fps] {$deltaTime delta}"
+                    frame.title = "$title [$ups UPS|FPS $fps] {$deltaTime delta} ${if (limitless) "#LIMITLESS" else ""}"
 
                     ups = 0
                     fps = 0
