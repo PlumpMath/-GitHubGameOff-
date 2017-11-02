@@ -1,9 +1,17 @@
 package de.sakul6499.githubgameoff
 
+import java.awt.Font
+import java.awt.GraphicsEnvironment
+
 data class GameConfig(
         val width: Int = 1280,
         val height: Int = 720,
-        val deltaLimit: Int = 60
+        val deltaLimit: Int = 60,
+        val fonts: List<Triple<String, Int, Int>> = listOf(
+                Triple("Courier New", Font.PLAIN, 20),
+                Triple("Courier", Font.PLAIN, 20),
+                Triple("monospace", Font.PLAIN, 20)
+        )
 ) {
     var validationResultErrors: Array<GameConfigValidateResult> = arrayOf()
         private set
@@ -23,4 +31,6 @@ data class GameConfig(
 
         return validationResultErrors.isEmpty()
     }
+
+    fun getValidFont(): Font = fonts.find { font -> GraphicsEnvironment.getLocalGraphicsEnvironment().availableFontFamilyNames.any { it == font.first } }.let { if (it == null) throw IllegalStateException("Couldn't found a valid found!") else Font(it.first, it.second, it.third) }
 }
