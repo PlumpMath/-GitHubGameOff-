@@ -133,9 +133,11 @@ class GameMain {
                         // Double buffering
                         frame.createBufferStrategy(2)
                         bufferStrategy = frame.bufferStrategy
+
+                        continue
                     }
 
-                    val graphics: Graphics2D = bufferStrategy!!.drawGraphics as Graphics2D
+                    val graphics: Graphics2D = bufferStrategy.drawGraphics as Graphics2D
 
                     // ###
                     // # Draw
