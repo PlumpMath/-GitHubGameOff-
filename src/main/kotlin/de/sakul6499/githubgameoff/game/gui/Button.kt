@@ -4,7 +4,15 @@ import java.awt.Graphics
 
 class Button(x: Double, y: Double, text: String? = null) : GUIBasicTextElement(x, y, 0.0, 0.0, text) {
     override fun renderElement(deltaTime: Double, graphics: Graphics) {
-        renderText(graphics, 100.0, 100.0, 50.0, 50.0, text!!)
+//        renderText(graphics, 100.0, 100.0, 50.0, 50.0, text!!)
+
+//        var index = 0
+//        SpriteFont.getString(text!!, SpriteFont.FontType.NORMAL, 255, 255, 255, 255).forEach {
+//            graphics.drawImage(it, (x * index++).toInt(), y.toInt(), SpriteFont.tileDimensions, SpriteFont.tileDimensions, null)
+
+
+//            graphics.drawImage(it, 100, 100, SpriteFont.tileDimensions, SpriteFont.tileDimensions, null)
+//        }
 
 //        val affineTransform = AffineTransform()
 //        val frc = FontRenderContext(affineTransform.0, true, true)
