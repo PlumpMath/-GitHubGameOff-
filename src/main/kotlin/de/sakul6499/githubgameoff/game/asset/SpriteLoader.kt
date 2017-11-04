@@ -30,7 +30,7 @@ object SpriteLoader {
     }
 
     fun defineTileArray(tileName: String, spriteName: String, tileX: Int, tileY: Int, sizeX: Int, sizeY: Int, times: Int) {
-        for (i in 0..times) defineTile("${tileName}_$i", spriteName, tileX, tileY, sizeX, sizeY)
+        for (i in 0..times) defineTile("${tileName}_$i", spriteName, tileX, tileY * i, sizeX, sizeY)
     }
 
     fun getTile(tileName: String): BufferedImage = Tiles[tileName] ?: createPlaceholderImage()

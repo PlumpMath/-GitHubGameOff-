@@ -2,20 +2,21 @@ package de.sakul6499.githubgameoff.game.asset
 
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
-import java.awt.image.DataBufferInt
-
 
 
 object SpriteFont {
-    // Font Map 128pxPerChar 2048x768px - Black-Alpha
+    // the total sprite width and height
     private val spriteWidth = 2048
     private val spriteHeight = 768
 
-    val tileDimensions = 128
+    // each tile is a 128px per 128px image
+    val tileDimension = 128
 
+    // the rows [y] and entries per row [x] in the sprite
     private val rows = 6
     private val entries = 16
 
+    // the chars in order
     private val font: Map<Pair<Int, Int>, Char> = mapOf(
             // First row
             Pair(Pair(0, 0), ' '),
@@ -125,84 +126,55 @@ object SpriteFont {
             Pair(Pair(5, 14), '~')
     )
 
-    val map: MutableMap<String, BufferedImage> = mutableMapOf()
-    fun getCharTileName(c: Char, fontType: FontType, rgba: Int): String {
+    // the buffer with all tiles
+    val buffer: MutableMap<String, BufferedImage> = mutableMapOf()
+
+    fun getCharTileName(c: Char, fontType: FontType, color: FontColor): String {
         val pair = font.filterValues { it == c }.keys.firstOrNull() ?: throw IllegalStateException("Couldn't find '$c'!")
-        val name = "${fontType}_${pair.first}_${pair.second}_$rgba"
-        println(name)
-        return name
+        return "${fontType}_${color}_${pair.first}_${pair.second}"
     }
 
-    fun calcRGBA(r: Int, g: Int, b: Int, a: Int): Int {
-        val rgb: Int = r + (g * 256) + (b * 256 * 256)
-        val rgba: Int = (a / 100) * rgb
-        return rgba
-    }
+    init {
+        println("Loading font ...")
 
-//    init {
-//        // Example:
-//        // font_<FontType>_<Row>_<Entry>
-//        // font_NORMAL_0_0
-//        FontType.values().forEach { fontType ->
-//            SpriteLoader.registerSprite("font_$fontType", this::class.java.getResource("/font/font_$fontType.png"))
-//
-//            for(i in 0..rows) {
-//                SpriteLoader.defineTileArray("font_${fontType}_$i", "font_$fontType", 0, 0, tileDimensions, tileDimensions, entries)
-//            }
-//        }
-//    }
+        for (type in FontType.values()) {
+            for (color in FontColor.values()) {
+                val fontSprite = ImageIO.read(this::class.java.getResource("/font/font_${type}_${color}.png"))
+
+                for (y in 0 until rows) {
+                    for (x in 0 until entries) {
+                        buffer["${type}_${color}_${y}_${x}"] = fontSprite.getSubimage(x * tileDimension, y * tileDimension, tileDimension, tileDimension)
+                    }
+                }
+            }
+        }
+
+        println("Finished loading font!")
+    }
 
     enum class FontType {
         NORMAL,
         BOLD
     }
 
-//    fun getChar(c: Char, fontType: FontType = FontType.NORMAL): BufferedImage = SpriteLoader.getTile(getCharTileName(c, fontType))
-    fun getChar(c: Char, fontType: FontType, r: Int, g: Int, b: Int, a: Int = 100): BufferedImage {
-        val rgba = calcRGBA(r, g, b, a)
-        val name = getCharTileName(c, fontType, rgba)
-        var image = map[name]
-        if(image == null) {
-            val pair = font.filterValues { c == it }.keys.firstOrNull() ?: throw IllegalStateException("Couldn't find tile for $c!")
-            println(pair.first)
-            println(pair.second)
-            val _x = 128 * pair.second
-            val _y = 128 * pair.first
-            println(_x)
-            println(_y)
-            image = ImageIO.read(this::class.java.getResource("/font/font_$fontType.png")).getSubimage(_x, _y, 128, 128)
-
-            // Text color?!
-
-            val pixels = (image.raster.dataBuffer as DataBufferInt).data
-
-            for(x in 0 until image.width) {
-                var result = ""
-                for(y in 0 until image.height) {
-                    result += "${image.getRGB(x, y)} "
-
-                    if(pixels[y * image.width + x] == 0) {
-                        pixels[y * image.width + x] = rgba
-                        println("SET")
-                    }
-                }
-                println("#$x $result")
-            }
-            map[name] = image
-        }
-
-        return image ?: throw IllegalStateException("Failed during rendering of character $c!")
+    enum class FontColor {
+        BLACK,
+        WHITE
     }
-    fun getChar(c: Char, fontType: FontType = FontType.NORMAL): BufferedImage = getChar(c, fontType, 0, 0, 0, 0)
 
-//    fun getString(text: String, fontType: FontType = FontType.NORMAL): Array<BufferedImage> {
-//        var result: Array<BufferedImage> = arrayOf()
-//        text.forEach { result += getChar(it, fontType) }
-//        return result
-//    }
-//    fun getString(text: String, fontType: FontType = FontType.NORMAL, r: Int, g: Int, b: Int, a: Int): Array<BufferedImage> {
-//        var result: Array<BufferedImage> = arrayOf()
-//        text.forEach { result += getChar(it, fontType, r, g, b, a) }
-//        return result
-//    }
+    fun getChar(c: Char, type: FontType = FontType.NORMAL, color: FontColor = FontColor.BLACK): BufferedImage = buffer[getCharTileName(c, type, color)] ?: throw IllegalStateException("Couldn't find font tile for '$c', '$type', '$color'!")
+
+    fun getString(text: String, type: FontType = FontType.NORMAL, color: FontColor = FontColor.BLACK): Array<BufferedImage> {
+        var result: Array<BufferedImage> = arrayOf()
+        text.forEach { char -> result += getChar(char, type, color) }
+        return result
+    }
+
+    fun getStringLength(text: String, fontWidth: Int = tileDimension, fontVerticalSpacing: Int = tileDimension): Int {
+        if (fontWidth <= 0) throw IllegalArgumentException("fontWidth must not be smaller or equal null!")
+        if (fontVerticalSpacing <= 0) throw IllegalArgumentException("fontVerticalSpacing must not be smaller or equal null!")
+        if (fontWidth < fontVerticalSpacing) throw IllegalArgumentException("fontWidth must not be smaller than fontVerticalSpacing")
+
+        return text.length * fontVerticalSpacing + (fontWidth - fontVerticalSpacing)
+    }
 }

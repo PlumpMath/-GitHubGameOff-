@@ -1,6 +1,7 @@
 package de.sakul6499.githubgameoff.game
 
 import com.google.gson.Gson
+import de.sakul6499.githubgameoff.game.asset.SpriteFont
 import de.sakul6499.githubgameoff.game.input.ControllerHandler
 import de.sakul6499.githubgameoff.game.input.InputHandler
 import de.sakul6499.githubgameoff.game.input.MouseHandler
@@ -81,6 +82,11 @@ class GameMain {
 
         // Controller
         ControllerHandler
+
+        // ###
+        // # Font
+        // ###
+        SpriteFont
 
         // ###
         // # Game States
