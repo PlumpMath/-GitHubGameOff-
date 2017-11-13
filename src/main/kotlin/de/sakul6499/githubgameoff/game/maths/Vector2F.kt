@@ -89,4 +89,8 @@ class Vector2F(var x: Float = 0.0F, var y: Float = 0.0F) {
         result = 31 * result + y.hashCode()
         return result
     }
+
+    override fun toString(): String {
+        return "Vector2F(x=$x, y=$y)"
+    }
 }

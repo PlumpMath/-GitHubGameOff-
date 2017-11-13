@@ -1,8 +1,8 @@
 package de.sakul6499.githubgameoff.game.gui
 
-import de.sakul6499.githubgameoff.game.asset.Maths
 import de.sakul6499.githubgameoff.game.asset.SpriteFont
 import de.sakul6499.githubgameoff.game.input.MouseHandler
+import de.sakul6499.githubgameoff.game.maths.Maths
 import java.awt.Color
 import java.awt.Graphics
 
