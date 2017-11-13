@@ -1,5 +1,6 @@
 package de.sakul6499.githubgameoff.game.gui
 
+import de.sakul6499.githubgameoff.game.Renderable
 import de.sakul6499.githubgameoff.game.asset.SpriteFont
 import java.awt.Graphics
 

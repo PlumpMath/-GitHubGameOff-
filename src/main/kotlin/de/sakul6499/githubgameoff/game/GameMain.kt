@@ -3,7 +3,7 @@ package de.sakul6499.githubgameoff.game
 import com.google.gson.Gson
 import de.sakul6499.githubgameoff.game.asset.SpriteFont
 import de.sakul6499.githubgameoff.game.input.ControllerHandler
-import de.sakul6499.githubgameoff.game.input.InputHandler
+import de.sakul6499.githubgameoff.game.input.KeyboardHandler
 import de.sakul6499.githubgameoff.game.input.MouseHandler
 import de.sakul6499.githubgameoff.game.state.GameStateManager
 import de.sakul6499.githubgameoff.game.state.InGameGameState
@@ -26,6 +26,9 @@ class GameMain {
     private val frame: JFrame = JFrame()
 
     private var thread: Thread
+
+    private val updateable: MutableList<Updateable> = mutableListOf()
+    private val renderable: MutableList<Renderable> = mutableListOf()
 
     init {
         println("CWD: ${cwd.absolutePath} / ${cwd.canonicalPath}")
@@ -73,7 +76,7 @@ class GameMain {
         })
 
         // Input Listener
-        frame.addKeyListener(InputHandler.instance)
+        frame.addKeyListener(KeyboardHandler.INSTANCE)
 
         // Mouse listener
         frame.addMouseListener(MouseHandler.instance)
@@ -192,6 +195,14 @@ class GameMain {
             println("### EXIT ###")
             ControllerHandler.instance.exit()
         })
+    }
+
+    fun registerUpdateable(updateable: Updateable) {
+        this.updateable.add(updateable)
+    }
+
+    fun registerRenderable(renderable: Renderable) {
+        this.renderable.add(renderable)
     }
 
     fun start() {

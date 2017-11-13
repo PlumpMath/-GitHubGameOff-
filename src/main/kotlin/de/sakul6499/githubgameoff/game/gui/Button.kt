@@ -1,5 +1,7 @@
 package de.sakul6499.githubgameoff.game.gui
 
+import de.sakul6499.githubgameoff.game.Renderable
+import de.sakul6499.githubgameoff.game.Updateable
 import de.sakul6499.githubgameoff.game.asset.SpriteFont
 import de.sakul6499.githubgameoff.game.input.MouseHandler
 import de.sakul6499.githubgameoff.game.maths.Maths

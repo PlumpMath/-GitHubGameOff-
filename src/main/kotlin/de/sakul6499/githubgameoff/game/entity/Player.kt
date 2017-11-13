@@ -1,8 +1,8 @@
 package de.sakul6499.githubgameoff.game.entity
 
 import de.sakul6499.githubgameoff.game.GameMain
+import de.sakul6499.githubgameoff.game.Renderable
 import de.sakul6499.githubgameoff.game.asset.SpriteFont
-import de.sakul6499.githubgameoff.game.gui.Renderable
 import de.sakul6499.githubgameoff.game.gui.Text
 import java.awt.Color
 import java.awt.Graphics

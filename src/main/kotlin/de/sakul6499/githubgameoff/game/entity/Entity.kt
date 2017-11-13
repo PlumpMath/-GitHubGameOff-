@@ -1,7 +1,7 @@
 package de.sakul6499.githubgameoff.game.entity
 
-import de.sakul6499.githubgameoff.game.gui.Updateable
-import de.sakul6499.githubgameoff.game.input.InputHandler
+import de.sakul6499.githubgameoff.game.Updateable
+import de.sakul6499.githubgameoff.game.input.KeyboardHandler
 import de.sakul6499.githubgameoff.game.maths.Vector2F
 import java.awt.event.KeyEvent
 import java.util.*
@@ -24,10 +24,10 @@ abstract class Entity(x: Float = 0.0F, y: Float = 0.0F, var speedMultiplier: Flo
 
         val backupMovement = movement.copy()
 
-        if (InputHandler.IsKeyPressed(KeyEvent.VK_W)) {
+        if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_W)) {
             movement.y -= speedMultiplier
             if (movement.y < -maxSpeed) movement.y = -maxSpeed
-        } else if (InputHandler.IsKeyPressed(KeyEvent.VK_S)) {
+        } else if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_S)) {
             movement.y += speedMultiplier
             if (movement.y > maxSpeed) movement.y = maxSpeed
         } else {
@@ -38,10 +38,10 @@ abstract class Entity(x: Float = 0.0F, y: Float = 0.0F, var speedMultiplier: Flo
             }
         }
 
-        if (InputHandler.IsKeyPressed(KeyEvent.VK_A)) {
+        if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_A)) {
             movement.x -= speedMultiplier
             if (movement.x < -maxSpeed) movement.x = -maxSpeed
-        } else if (InputHandler.IsKeyPressed(KeyEvent.VK_D)) {
+        } else if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_D)) {
             movement.x += speedMultiplier
             if (movement.x > maxSpeed) movement.x = maxSpeed
         } else {
