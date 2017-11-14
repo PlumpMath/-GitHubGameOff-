@@ -2,6 +2,7 @@ package de.sakul6499.githubgameoff.game
 
 import com.google.gson.Gson
 import de.sakul6499.githubgameoff.game.asset.SpriteFont
+import de.sakul6499.githubgameoff.game.event.EventManager
 import de.sakul6499.githubgameoff.game.input.ControllerHandler
 import de.sakul6499.githubgameoff.game.input.KeyboardHandler
 import de.sakul6499.githubgameoff.game.input.MouseHandler
@@ -14,12 +15,14 @@ import java.awt.image.BufferStrategy
 import java.io.File
 import javax.swing.JFrame
 
-class GameMain {
+class GameMain private constructor() {
     companion object {
         val cwd: File = File(".")
         val gameConfigFile: File = File(cwd, "settings.json")
         lateinit var gameConfig: GameConfig
             private set
+
+        val instance: GameMain = GameMain()
     }
 
     private val title: String = "#GitHubGameOff"
@@ -27,8 +30,8 @@ class GameMain {
 
     private var thread: Thread
 
-    private val updateable: MutableList<Updateable> = mutableListOf()
-    private val renderable: MutableList<Renderable> = mutableListOf()
+//    private val updateable: MutableList<Updateable> = mutableListOf()
+//    private val renderable: MutableList<Renderable> = mutableListOf()
 
     init {
         println("CWD: ${cwd.absolutePath} / ${cwd.canonicalPath}")
@@ -104,14 +107,15 @@ class GameMain {
             var bufferStrategy: BufferStrategy? = null
 
             var lastTime = System.nanoTime()
-            val nsPerTick = 1000000000 / gameConfig.deltaLimit
             var lastTimer = System.currentTimeMillis()
+            val nsPerTick = 1000000000 / gameConfig.deltaLimit
+
             var deltaTime = 0.0
 
-            var forceRender = false
+//            var forceRender = false
 
             // defines weather or not the fps limitation for the delta time is used
-            var limitless: Boolean
+//            var limitless: Boolean
             var ups = 0
             var fps = 0
 
@@ -121,26 +125,30 @@ class GameMain {
                 // ###
                 val now = System.nanoTime()
                 deltaTime += (now - lastTime) / nsPerTick
-                // if the 'limited calculation' fails [<= 0.0], calculate without limit:
-                limitless = if (deltaTime <= 0.0) {
-                    deltaTime = (now - lastTime).toDouble()
-                    true
-                } else false
+//                // if the 'limited calculation' fails [<= 0.0], calculate without limit:
+//                limitless = if (deltaTime <= 0.0) {
+//                    deltaTime = (now - lastTime).toDouble()
+//                    true
+//                } else false
                 lastTime = now
 
-                // ###
-                // # Update
-                // ###
 
-                // Controller
-                ControllerHandler.instance.update()
+//                if (forceRender || deltaTime >= 1) {
+                if (deltaTime >= 1) {
+                    // ###
+                    // # Update
+                    // ###
+                    ups++
 
-                // Update current game state
-                GameStateManager.instance.updateCurrent(deltaTime)
+                    // Controller
+                    ControllerHandler.instance.update()
 
-                ups++
+                    // Update current game state
+                    GameStateManager.instance.updateCurrent(deltaTime)
 
-                if (forceRender || deltaTime >= 1) {
+                    // Update events
+                    EventManager.instance.update(deltaTime)
+
                     if (bufferStrategy == null) {
                         println("Creating buffer strategy!")
 
@@ -172,22 +180,24 @@ class GameMain {
 
                     fps++
 
-                    if (forceRender) {
-                        forceRender = false
-                    } else {
-                        deltaTime--
-                        if (deltaTime < 0) deltaTime = 0.0
+                    if (System.currentTimeMillis() - lastTimer >= 1000) {
+                        lastTimer += 1000
+//                        forceRender = true
+
+//                        frame.title = "$title [$ups UPS|FPS $fps] {$deltaTime delta} ${if (limitless) "#LIMITLESS" else ""}"
+
+                        ups = 0
+                        fps = 0
                     }
-                }
 
-                if (System.currentTimeMillis() - lastTimer >= 1000) {
-                    lastTimer += 1000
-                    forceRender = true
+                    deltaTime--
 
-                    frame.title = "$title [$ups UPS|FPS $fps] {$deltaTime delta} ${if (limitless) "#LIMITLESS" else ""}"
-
-                    ups = 0
-                    fps = 0
+//                    if (forceRender) {
+//                        forceRender = false
+//                    } else {
+//                        deltaTime--
+//                        if (deltaTime < 0) deltaTime = 0.0
+//                    }
                 }
             }
 
@@ -197,13 +207,13 @@ class GameMain {
         })
     }
 
-    fun registerUpdateable(updateable: Updateable) {
-        this.updateable.add(updateable)
-    }
-
-    fun registerRenderable(renderable: Renderable) {
-        this.renderable.add(renderable)
-    }
+//    fun registerUpdateable(updateable: Updateable) {
+//        this.updateable.add(updateable)
+//    }
+//
+//    fun registerRenderable(renderable: Renderable) {
+//        this.renderable.add(renderable)
+//    }
 
     fun start() {
         if (thread.isAlive) return
