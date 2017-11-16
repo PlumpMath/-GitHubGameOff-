@@ -1,13 +1,14 @@
 package de.sakul6499.githubgameoff.game.entity
 
 import com.studiohartman.jamepad.ControllerButton
-import de.sakul6499.githubgameoff.game.GameMain
-import de.sakul6499.githubgameoff.game.Renderable
-import de.sakul6499.githubgameoff.game.asset.SpriteFont
-import de.sakul6499.githubgameoff.game.gui.Text
-import de.sakul6499.githubgameoff.game.input.ControllerHandler
-import de.sakul6499.githubgameoff.game.input.KeyboardHandler
-import de.sakul6499.githubgameoff.game.maths.Vector2F
+import de.sakul6499.githubgameoff.engine.GameMain
+import de.sakul6499.githubgameoff.engine.Renderable
+import de.sakul6499.githubgameoff.engine.asset.SpriteFont
+import de.sakul6499.githubgameoff.engine.entity.Entity
+import de.sakul6499.githubgameoff.engine.gui.Text
+import de.sakul6499.githubgameoff.engine.input.ControllerHandler
+import de.sakul6499.githubgameoff.engine.input.KeyboardHandler
+import de.sakul6499.githubgameoff.engine.maths.Vector2F
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.event.KeyEvent
@@ -19,6 +20,9 @@ class Player : Entity(Vector2F((GameMain.gameConfig.width / 2).toFloat(), (GameM
 
     val text: Text = Text(position.x.toInt(), position.y.toInt(), "Player", SpriteFont.FontColor.WHITE, SpriteFont.FontType.NORMAL, 32, 32)
     val speedText: Text = Text(position.x.toInt(), position.y.toInt() + 32, "Speed", SpriteFont.FontColor.WHITE, SpriteFont.FontType.NORMAL, 32, 32)
+
+    val cross = Vector2F(0F, 0F)
+    val crossDistance = 64
 
     internal val bullets: CopyOnWriteArrayList<Bullet> = CopyOnWriteArrayList()
 
@@ -59,10 +63,29 @@ class Player : Entity(Vector2F((GameMain.gameConfig.width / 2).toFloat(), (GameM
 
         if (!movement.isNull()) position.add(movement)
 
-        // Bullets
-        if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_SPACE)) {
-            bullets += Bullet(position.copy(), Bullet.BulletType.NORMAL_RED, this)
+        // Cross
+        if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_UP)) {
+            cross.y = -crossDistance.toFloat()
+        } else if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_DOWN)) {
+            cross.y = crossDistance.toFloat()
+        } else {
+            cross.y = 0F
         }
+
+        if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_LEFT)) {
+            cross.x = -crossDistance.toFloat()
+        } else if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_RIGHT)) {
+            cross.x = crossDistance.toFloat()
+        } else {
+            cross.x = 0F
+        }
+
+        if (!cross.isNull()) bullets += Bullet(position.copy(), cross.copy().divide(8F, 8F), Bullet.BulletType.NORMAL_RED, this)
+
+        // Bullets
+//        if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_SPACE)) {
+//
+//        }
 
         bullets.iterator().forEach { it.update(delta, alpha) }
 
@@ -87,5 +110,10 @@ class Player : Entity(Vector2F((GameMain.gameConfig.width / 2).toFloat(), (GameM
         // Text indicator
         text.render(graphics)
         speedText.render(graphics)
+
+        if (!cross.isNull()) {
+            graphics.color = Color.CYAN
+            graphics.fillRect((position.getRoundX() + cross.getRoundX()) - width / 2, (position.getRoundY() + cross.getRoundY()) - height / 2, width / 2, height / 2)
+        }
     }
 }
