@@ -27,19 +27,19 @@ class InGameGameState : GameState {
 //        })
     }
 
-    override fun update(deltaTime: Double) {
-        button.update(deltaTime)
-        player.update(deltaTime)
+    override fun update(delta: Long, alpha: Long) {
+        button.update(delta, alpha)
+        player.update(delta, alpha)
     }
 
-    override fun render(deltaTime: Double, graphics: Graphics) {
+    override fun render(graphics: Graphics) {
         // TODO: remove
         graphics.color = Color.BLACK
         graphics.fillRect(0, 0, GameMain.gameConfig.width, GameMain.gameConfig.height)
         // ###
 
-        button.render(deltaTime, graphics)
+        button.render(graphics)
 
-        player.render(deltaTime, graphics)
+        player.render(graphics)
     }
 }

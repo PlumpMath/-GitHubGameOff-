@@ -16,11 +16,11 @@ class Button(x: Int, y: Int, text: String, var autoSize: Boolean = false, var wi
         setText(text)
     }
 
-    override fun update(deltaTime: Double) {
+    override fun update(delta: Long, alpha: Long) {
         hover = Maths.isInAABB(MouseHandler.MousePosition.x, MouseHandler.MousePosition.y, getTotalMinX(), getTotalMinY(), getTotalMaxX(), getTotalMaxY())
     }
 
-    override fun render(deltaTime: Double, graphics: Graphics) {
+    override fun render(graphics: Graphics) {
         graphics.color = if (hover) Color.GRAY else Color.WHITE
         graphics.fillRect(x, y, width, height)
 
@@ -44,7 +44,7 @@ class Button(x: Int, y: Int, text: String, var autoSize: Boolean = false, var wi
             graphics.fillRect(x + width, getTotalMinY(), paddingRight, getTotalHeight())
         }
 
-        super.render(deltaTime, graphics)
+        super.render(graphics)
     }
 
     override fun setText(text: String): Int {

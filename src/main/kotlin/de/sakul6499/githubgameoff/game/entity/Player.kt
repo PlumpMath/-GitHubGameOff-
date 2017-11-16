@@ -13,40 +13,46 @@ import java.awt.Graphics
 import java.awt.event.KeyEvent
 import java.util.concurrent.CopyOnWriteArrayList
 
-class Player : Entity(Vector2F((GameMain.gameConfig.width / 2).toFloat(), (GameMain.gameConfig.height / 2).toFloat())), Renderable {
+class Player : Entity(Vector2F((GameMain.gameConfig.width / 2).toFloat(), (GameMain.gameConfig.height / 2).toFloat()), speedMultiplier = 0.1F), Renderable {
     val width: Int = 50
     val height: Int = 50
 
-    val text: Text = Text(position.x.toInt(), position.y.toInt(), "Player", SpriteFont.FontColor.WHITE, SpriteFont.FontType.NORMAL, width, height)
+    val text: Text = Text(position.x.toInt(), position.y.toInt(), "Player", SpriteFont.FontColor.WHITE, SpriteFont.FontType.NORMAL, 32, 32)
+    val speedText: Text = Text(position.x.toInt(), position.y.toInt() + 32, "Speed", SpriteFont.FontColor.WHITE, SpriteFont.FontType.NORMAL, 32, 32)
 
     internal val bullets: CopyOnWriteArrayList<Bullet> = CopyOnWriteArrayList()
 
-    override fun update(deltaTime: Double) {
+    override fun update(delta: Long, alpha: Long) {
         // Movement
+        val speed = if (alpha > 0) speedMultiplier * alpha else speedMultiplier
         if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_W) || ControllerHandler.IsButtonPressed(ControllerButton.DPAD_UP)) {
-            movement.y -= speedMultiplier
+            println("Before: ${movement.y}")
+            movement.y -= speed
+            println("After: ${movement.y}")
             if (movement.y < -maxSpeed) movement.y = -maxSpeed
+            println("End: ${movement.y}")
+            println()
         } else if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_S) || ControllerHandler.IsButtonPressed(ControllerButton.DPAD_DOWN)) {
-            movement.y += speedMultiplier
+            movement.y += speed
             if (movement.y > maxSpeed) movement.y = maxSpeed
         } else {
             when {
-                movement.y > 0.1 -> movement.y -= speedMultiplier
-                movement.y < -0.1 -> movement.y += speedMultiplier
+                movement.y > 0.05 -> movement.y -= speed
+                movement.y < -0.05 -> movement.y += speed
                 else -> movement.y = 0F
             }
         }
 
         if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_A) || ControllerHandler.IsButtonPressed(ControllerButton.DPAD_LEFT)) {
-            movement.x -= speedMultiplier
+            movement.x -= speed
             if (movement.x < -maxSpeed) movement.x = -maxSpeed
         } else if (KeyboardHandler.IsKeyPressed(KeyEvent.VK_D) || ControllerHandler.IsButtonPressed(ControllerButton.DPAD_RIGHT)) {
-            movement.x += speedMultiplier
+            movement.x += speed
             if (movement.x > maxSpeed) movement.x = maxSpeed
         } else {
             when {
-                movement.x > 0.1 -> movement.x -= speedMultiplier
-                movement.x < -0.1 -> movement.x += speedMultiplier
+                movement.x > 0.05 -> movement.x -= speed
+                movement.x < -0.05 -> movement.x += speed
                 else -> movement.x = 0F
             }
         }
@@ -58,23 +64,28 @@ class Player : Entity(Vector2F((GameMain.gameConfig.width / 2).toFloat(), (GameM
             bullets += Bullet(position.copy(), Bullet.BulletType.NORMAL_RED, this)
         }
 
-        bullets.iterator().forEach { it.update(deltaTime) }
+        bullets.iterator().forEach { it.update(delta, alpha) }
 
         // Set Text for ... facing ... indicator
-        text.setText(getFacing().toString())
+        text.setText("${getFacing()}")
         text.x = position.x.toInt()
         text.y = position.y.toInt()
+
+        speedText.setText("$speed / $maxSpeed [$speedMultiplier * $alpha = ${speedMultiplier * alpha}]")
+        speedText.x = position.x.toInt()
+        speedText.y = position.y.toInt() + 32
     }
 
-    override fun render(deltaTime: Double, graphics: Graphics) {
+    override fun render(graphics: Graphics) {
         // Player
         graphics.color = Color.GREEN
         graphics.fillOval(position.x.toInt() - width / 2, position.y.toInt() - height / 2, width / 2, height / 2)
 
         // Bullet
-        bullets.iterator().forEach { it.render(deltaTime, graphics) }
+        bullets.iterator().forEach { it.render(graphics) }
 
         // Text indicator
-        text.render(deltaTime, graphics)
+        text.render(graphics)
+        speedText.render(graphics)
     }
 }

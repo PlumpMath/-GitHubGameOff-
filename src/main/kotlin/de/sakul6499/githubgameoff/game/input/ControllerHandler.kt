@@ -1,8 +1,9 @@
 package de.sakul6499.githubgameoff.game.input
 
 import com.studiohartman.jamepad.*
+import de.sakul6499.githubgameoff.game.Updateable
 
-class ControllerHandler private constructor() {
+class ControllerHandler private constructor() : Updateable {
 
     companion object {
         val instance: ControllerHandler = ControllerHandler()
@@ -21,7 +22,7 @@ class ControllerHandler private constructor() {
         controllerManager.initSDLGamepad()
     }
 
-    fun update() {
+    override fun update(delta: Long, alpha: Long) {
         controllerManager.update()
         if (controllerManager.numControllers > 0) {
             for (i in 0..controllerManager.numControllers) {

@@ -3,6 +3,7 @@ package de.sakul6499.githubgameoff.game
 import com.google.gson.Gson
 import de.sakul6499.githubgameoff.game.asset.SpriteFont
 import de.sakul6499.githubgameoff.game.event.EventManager
+import de.sakul6499.githubgameoff.game.gui.Text
 import de.sakul6499.githubgameoff.game.input.ControllerHandler
 import de.sakul6499.githubgameoff.game.input.KeyboardHandler
 import de.sakul6499.githubgameoff.game.input.MouseHandler
@@ -11,27 +12,21 @@ import de.sakul6499.githubgameoff.game.state.InGameGameState
 import java.awt.*
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import java.awt.image.BufferStrategy
 import java.io.File
 import javax.swing.JFrame
 
-class GameMain private constructor() {
-    companion object {
+object GameMain {
         val cwd: File = File(".")
         val gameConfigFile: File = File(cwd, "settings.json")
-        lateinit var gameConfig: GameConfig
+    var gameConfig: GameConfig
             private set
-
-        val instance: GameMain = GameMain()
-    }
 
     private val title: String = "#GitHubGameOff"
     private val frame: JFrame = JFrame()
 
-    private var thread: Thread
-
-//    private val updateable: MutableList<Updateable> = mutableListOf()
-//    private val renderable: MutableList<Renderable> = mutableListOf()
+    var UPS: Int = 0
+    var FPS: Int = 0
+    private var gameLoop: Thread
 
     init {
         println("CWD: ${cwd.absolutePath} / ${cwd.canonicalPath}")
@@ -61,6 +56,7 @@ class GameMain private constructor() {
         // ###
         println("Initializing window ...")
         frame.size = Dimension(gameConfig.width, gameConfig.height)
+        frame.title = title
         frame.layout = null
         frame.isResizable = false
         frame.setLocationRelativeTo(null)
@@ -101,133 +97,120 @@ class GameMain private constructor() {
         GameStateManager.instance.registerGameState(InGameGameState(), true)
 
         // ###
-        // # Main Thread
+        // # Game Loop
         // ###
-        thread = Thread(Runnable {
-            var bufferStrategy: BufferStrategy? = null
-
+        gameLoop = Thread({
+            val timeStep = 1000000000 / 60
             var lastTime = System.nanoTime()
             var lastTimer = System.currentTimeMillis()
-            val nsPerTick = 1000000000 / gameConfig.deltaLimit
+            var lag = 0L
 
-            var deltaTime = 0.0
-
-//            var forceRender = false
-
-            // defines weather or not the fps limitation for the delta time is used
-//            var limitless: Boolean
-            var ups = 0
-            var fps = 0
+            var currentUPS = 0
+            var currentFPS = 0
 
             while (!Thread.currentThread().isInterrupted) {
-                // ###
-                // # Delta Time
-                // ###
-                val now = System.nanoTime()
-                deltaTime += (now - lastTime) / nsPerTick
-//                // if the 'limited calculation' fails [<= 0.0], calculate without limit:
-//                limitless = if (deltaTime <= 0.0) {
-//                    deltaTime = (now - lastTime).toDouble()
-//                    true
-//                } else false
-                lastTime = now
+                val delta = System.nanoTime() - lastTime
+                lastTime = System.nanoTime()
+                lag += delta
 
+                // ###
+                // # Handle Events
+                // ###
+                var alpha = lag / timeStep
+                // Controller
+                ControllerHandler.instance.update(delta, alpha)
 
-//                if (forceRender || deltaTime >= 1) {
-                if (deltaTime >= 1) {
+                // Update events
+                EventManager.instance.update(delta, alpha)
+
+                while (lag >= timeStep) {
+                    lag -= timeStep
+                    alpha = lag / timeStep
+
                     // ###
                     // # Update
                     // ###
-                    ups++
+                    // Update current game state [TODO test alpha]
+                    GameStateManager.instance.update(delta, alpha)
 
-                    // Controller
-                    ControllerHandler.instance.update()
+                    currentUPS++
+                }
 
-                    // Update current game state
-                    GameStateManager.instance.updateCurrent(deltaTime)
+                // ###
+                // # Render
+                // ###
+                // Buffer Strategy
+                if (frame.bufferStrategy == null) {
+                    println("Creating buffer strategy!")
+                    frame.createBufferStrategy(2)
+                }
 
-                    // Update events
-                    EventManager.instance.update(deltaTime)
+                // Graphics
+                val graphics: Graphics2D = frame.bufferStrategy.drawGraphics as Graphics2D
 
-                    if (bufferStrategy == null) {
-                        println("Creating buffer strategy!")
+                // Clear screen
+                graphics.clearRect(0, 0, gameConfig.width, gameConfig.height)
 
-                        // Double buffering
-                        frame.createBufferStrategy(2)
-                        bufferStrategy = frame.bufferStrategy
+                // Render current game state
+                GameStateManager.instance.render(graphics)
 
-                        continue
-                    }
+                // Show info
+                Text(0, 32, "UPS: $UPS [$currentUPS]", fontWidth = 32, fontHeight = 32).render(graphics)
+                Text(0, 32 * 2, "FPS: $FPS [$currentFPS]", fontWidth = 32, fontHeight = 32).render(graphics)
+                Text(0, 32 * 3, "Lag: $lag", fontWidth = 32, fontHeight = 32).render(graphics)
+                Text(0, 32 * 4, "Delta: $delta", fontWidth = 32, fontHeight = 32).render(graphics)
+                Text(0, 32 * 5, "Alpha: $alpha", fontWidth = 32, fontHeight = 32).render(graphics)
 
-                    val graphics: Graphics2D = bufferStrategy.drawGraphics as Graphics2D
+                // Render cursor
+                graphics.color = if (MouseHandler.PressedAny()) Color.MAGENTA else Color.white
+                graphics.fillRect(MouseHandler.MousePosition.x, MouseHandler.MousePosition.y, 64, 64)
 
-                    // ###
-                    // # Draw
-                    // ###
-                    // Clear screen
-                    graphics.clearRect(0, 0, gameConfig.width, gameConfig.height)
+                // Finish up
+                graphics.dispose()
+                frame.bufferStrategy.show()
 
-                    // Render current game state
-                    GameStateManager.instance.renderCurrent(deltaTime, graphics)
+                currentFPS++
 
-                    // Render cursor
-                    graphics.color = if (MouseHandler.PressedAny()) Color.MAGENTA else Color.white
-                    graphics.fillRect(MouseHandler.MousePosition.x, MouseHandler.MousePosition.y, 64, 64)
+                if (System.currentTimeMillis() - lastTimer >= 1000) {
+                    lastTimer += 1000
 
-                    // Finish up
-                    graphics.dispose()
-                    bufferStrategy.show()
+                    UPS = currentUPS
+                    FPS = currentFPS
 
-                    fps++
+                    frame.title = "$title [UPS $UPS | $FPS FPS]"
 
-                    if (System.currentTimeMillis() - lastTimer >= 1000) {
-                        lastTimer += 1000
-//                        forceRender = true
-
-//                        frame.title = "$title [$ups UPS|FPS $fps] {$deltaTime delta} ${if (limitless) "#LIMITLESS" else ""}"
-
-                        ups = 0
-                        fps = 0
-                    }
-
-                    deltaTime--
-
-//                    if (forceRender) {
-//                        forceRender = false
-//                    } else {
-//                        deltaTime--
-//                        if (deltaTime < 0) deltaTime = 0.0
-//                    }
+                    currentUPS = 0
+                    currentFPS = 0
                 }
             }
 
             println("### INTERRUPTED ###")
             println("### EXIT ###")
+
+            // Free SDL
             ControllerHandler.instance.exit()
-        })
+
+            // Free Frame
+            frame.isVisible = false
+            frame.removeAll()
+            frame.removeKeyListener(KeyboardHandler.INSTANCE)
+            frame.removeMouseListener(MouseHandler.instance)
+        }, "Game Loop")
     }
 
-//    fun registerUpdateable(updateable: Updateable) {
-//        this.updateable.add(updateable)
-//    }
-//
-//    fun registerRenderable(renderable: Renderable) {
-//        this.renderable.add(renderable)
-//    }
-
     fun start() {
-        if (thread.isAlive) return
+        if (gameLoop.isAlive) return
         println("Starting!")
 
         frame.isVisible = true
-        thread.start()
+        gameLoop.start()
     }
 
     fun stop() {
-        if (!thread.isAlive) return
+        if (!gameLoop.isAlive) return
         println("Stopping!")
 
         frame.isVisible = false
-        thread.interrupt()
+        gameLoop.interrupt()
     }
 }

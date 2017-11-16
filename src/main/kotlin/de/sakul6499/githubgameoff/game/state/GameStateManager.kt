@@ -1,8 +1,10 @@
 package de.sakul6499.githubgameoff.game.state
 
+import de.sakul6499.githubgameoff.game.Renderable
+import de.sakul6499.githubgameoff.game.Updateable
 import java.awt.Graphics
 
-class GameStateManager private constructor() {
+class GameStateManager private constructor() : Updateable, Renderable {
     companion object {
         val instance: GameStateManager = GameStateManager()
     }
@@ -28,12 +30,11 @@ class GameStateManager private constructor() {
         currentGameState = name
     }
 
-    fun updateCurrent(deltaTime: Double) {
-        gameStates.find { it.name == currentGameState }!!.update(deltaTime)
+    override fun update(delta: Long, alpha: Long) {
+        gameStates.find { it.name == currentGameState }!!.update(delta, alpha)
     }
 
-    fun renderCurrent(deltaTime: Double, graphics: Graphics) {
-        gameStates.find { it.name == currentGameState }!!.render(deltaTime, graphics)
+    override fun render(graphics: Graphics) {
+        gameStates.find { it.name == currentGameState }!!.render(graphics)
     }
-
 }

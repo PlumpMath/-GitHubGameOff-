@@ -1,10 +1,8 @@
 package de.sakul6499.githubgameoff.game.state
 
-import java.awt.Graphics
+import de.sakul6499.githubgameoff.game.Renderable
+import de.sakul6499.githubgameoff.game.Updateable
 
-interface GameState {
+interface GameState : Updateable, Renderable {
     val name: String
-
-    fun update(deltaTime: Double)
-    fun render(deltaTime: Double, graphics: Graphics)
 }
