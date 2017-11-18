@@ -8,10 +8,7 @@ import de.sakul6499.githubgameoff.engine.input.KeyboardHandler
 import de.sakul6499.githubgameoff.engine.input.MouseHandler
 import de.sakul6499.githubgameoff.engine.state.GameStateManager
 import de.sakul6499.githubgameoff.engine.state.InGameGameState
-import java.awt.Dimension
-import java.awt.Graphics2D
-import java.awt.Point
-import java.awt.Toolkit
+import java.awt.*
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.File
@@ -64,6 +61,7 @@ object GameMain {
         frame.setLocationRelativeTo(null)
         frame.isLocationByPlatform = false
         frame.defaultCloseOperation = JFrame.DISPOSE_ON_CLOSE
+        frame.isUndecorated = true
         frame.cursor = Toolkit.getDefaultToolkit().createCustomCursor(Toolkit.getDefaultToolkit().getImage(""), Point(0, 0), "emptyCursor")
 
         // ###

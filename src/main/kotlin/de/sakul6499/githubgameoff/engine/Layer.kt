@@ -58,6 +58,12 @@ abstract class Layer(val name: String, internal var order: Int, internal val x: 
         graphics.drawImage(image, position.x, position.y, width, height, null)
     }
 
+    fun renderBox(graphics: Graphics, x: Int = this.x, y: Int = this.y, width: Int = this.width, height: Int = this.height, color: Color = Color.RED) {
+        graphics.color = color
+        val position = translate(x, y, width, height)
+        graphics.drawRect(position.x, position.y, width, height)
+    }
+
     private fun translate(x: Int, y: Int): Vector2I {
         if(x < 0 || y < 0 || x > width || y > height) throw PositionTranslationException(x, y, 0, width, 0, height)
         return Vector2I(this.x + x, this.y + y)

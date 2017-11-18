@@ -10,6 +10,7 @@ class MouseLayer: Layer("Mouse", 10000, x = 2, y = 12) {
     override fun update(delta: Long, alpha: Long) {}
 
     override fun render(graphics: Graphics) {
-        renderImage(graphics, SpriteLoader.getTile("MouseCursor"), x = MouseHandler.MousePosition.x, y = MouseHandler.MousePosition.y, width = 16, height = 16)
+        if(MouseHandler.MousePosition.x > 0 && MouseHandler.MousePosition.y > 0)
+            renderImage(graphics, SpriteLoader.getTile("MouseCursor"), x = MouseHandler.MousePosition.x - 16 / 2, y = MouseHandler.MousePosition.y - 16 / 2, width = 16, height = 16)
     }
 }
