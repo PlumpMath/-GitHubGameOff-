@@ -1,5 +1,6 @@
 # Build
 build/
+out/
 
 # Gradle
 .gradle/
@@ -8,6 +9,8 @@ gradle/
 # IDEA
 .idea/
 *.iml
+*.ipr
+*.iws
 
 # Game
 settings.json
