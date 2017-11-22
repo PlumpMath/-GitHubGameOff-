@@ -1,6 +1,6 @@
 package de.sakul6499.githubgameoff.engine.event
 
-import de.sakul6499.githubgameoff.engine.Updateable
+import de.sakul6499.githubgameoff.engine.graphics.Updateable
 
 class EventManager private constructor(): Updateable {
 

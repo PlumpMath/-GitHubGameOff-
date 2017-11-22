@@ -1,7 +1,7 @@
 package de.sakul6499.githubgameoff.engine.state
 
-import de.sakul6499.githubgameoff.engine.Renderable
-import de.sakul6499.githubgameoff.engine.Updateable
+import de.sakul6499.githubgameoff.engine.graphics.Renderable
+import de.sakul6499.githubgameoff.engine.graphics.Updateable
 import java.awt.Graphics
 
 class GameStateManager private constructor() : Updateable, Renderable {

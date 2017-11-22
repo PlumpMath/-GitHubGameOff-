@@ -1,7 +1,7 @@
 package de.sakul6499.githubgameoff.engine.input
 
 import com.studiohartman.jamepad.*
-import de.sakul6499.githubgameoff.engine.Updateable
+import de.sakul6499.githubgameoff.engine.graphics.Updateable
 
 class ControllerHandler private constructor() : Updateable {
 

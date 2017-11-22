@@ -1,7 +1,7 @@
 package de.sakul6499.githubgameoff.game.entity
 
-import de.sakul6499.githubgameoff.engine.Renderable
 import de.sakul6499.githubgameoff.engine.entity.Entity
+import de.sakul6499.githubgameoff.engine.graphics.Renderable
 import de.sakul6499.githubgameoff.engine.maths.Vector2F
 import java.awt.Color
 import java.awt.Graphics

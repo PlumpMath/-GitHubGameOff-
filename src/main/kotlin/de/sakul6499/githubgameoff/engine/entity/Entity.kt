@@ -1,6 +1,6 @@
 package de.sakul6499.githubgameoff.engine.entity
 
-import de.sakul6499.githubgameoff.engine.Updateable
+import de.sakul6499.githubgameoff.engine.graphics.Updateable
 import de.sakul6499.githubgameoff.engine.maths.Direction
 import de.sakul6499.githubgameoff.engine.maths.Vector2F
 import java.util.*

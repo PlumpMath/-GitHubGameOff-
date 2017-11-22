@@ -3,12 +3,17 @@ package de.sakul6499.githubgameoff.engine
 import com.google.gson.Gson
 import de.sakul6499.githubgameoff.engine.asset.SpriteFont
 import de.sakul6499.githubgameoff.engine.event.EventManager
+import de.sakul6499.githubgameoff.engine.graphics.Screen
 import de.sakul6499.githubgameoff.engine.input.ControllerHandler
 import de.sakul6499.githubgameoff.engine.input.KeyboardHandler
 import de.sakul6499.githubgameoff.engine.input.MouseHandler
 import de.sakul6499.githubgameoff.engine.state.GameStateManager
 import de.sakul6499.githubgameoff.engine.state.InGameGameState
-import java.awt.*
+import java.awt.Dimension
+import java.awt.Graphics2D
+import java.awt.Point
+import java.awt.Toolkit
+import java.awt.event.KeyEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.File
@@ -122,6 +127,9 @@ object GameMain {
 
                 // Update events
                 EventManager.instance.update(delta, alpha)
+
+                // TODO: move to Event?
+                Screen.setDebugRendering(KeyboardHandler.IsKeyPressed(KeyEvent.VK_CONTROL) && KeyboardHandler.IsKeyPressed(KeyEvent.VK_ALT))
 
                 while (lag >= timeStep) {
                     lag -= timeStep

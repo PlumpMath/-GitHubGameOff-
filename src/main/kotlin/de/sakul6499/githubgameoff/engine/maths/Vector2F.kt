@@ -3,6 +3,7 @@ package de.sakul6499.githubgameoff.engine.maths
 class Vector2F(var x: Float = 0.0F, var y: Float = 0.0F) {
     constructor(other: Vector2F) : this(other.x, other.y)
     constructor(other: Vector2I) : this(other.x.toFloat(), other.y.toFloat())
+    constructor(x: Int, y: Int) : this(x.toFloat(), y.toFloat())
 
     fun add(x: Float, y: Float): Vector2F {
         this.x += x

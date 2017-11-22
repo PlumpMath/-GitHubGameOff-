@@ -2,14 +2,13 @@ package de.sakul6499.githubgameoff.game.entity
 
 import com.studiohartman.jamepad.ControllerButton
 import de.sakul6499.githubgameoff.engine.GameMain
-import de.sakul6499.githubgameoff.engine.Renderable
 import de.sakul6499.githubgameoff.engine.asset.SpriteFont
 import de.sakul6499.githubgameoff.engine.entity.Entity
+import de.sakul6499.githubgameoff.engine.graphics.Renderable
 import de.sakul6499.githubgameoff.engine.gui.Text
 import de.sakul6499.githubgameoff.engine.input.ControllerHandler
 import de.sakul6499.githubgameoff.engine.input.KeyboardHandler
 import de.sakul6499.githubgameoff.engine.maths.Vector2F
-import java.awt.Color
 import java.awt.Graphics
 import java.awt.event.KeyEvent
 import java.util.concurrent.CopyOnWriteArrayList
@@ -100,20 +99,6 @@ class Player : Entity(Vector2F((GameMain.gameConfig.width / 2).toFloat(), (GameM
     }
 
     override fun render(graphics: Graphics) {
-        // Player
-        graphics.color = Color.GREEN
-        graphics.fillOval(position.x.toInt() - width / 2, position.y.toInt() - height / 2, width / 2, height / 2)
 
-        // Bullet
-        bullets.iterator().forEach { it.render(graphics) }
-
-        // Text indicator
-        text.render(graphics)
-        speedText.render(graphics)
-
-        if (!cross.isNull()) {
-            graphics.color = Color.CYAN
-            graphics.fillRect((position.getRoundX() + cross.getRoundX()) - width / 2, (position.getRoundY() + cross.getRoundY()) - height / 2, width / 2, height / 2)
-        }
     }
 }

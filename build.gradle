@@ -20,8 +20,8 @@ apply plugin: 'application'
 group = 'de.sakul6499.githubgameoff'
 version = '0.1a'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 9.0
+targetCompatibility = 9.0
 
 mainClassName = group + ".Launcher"
 
@@ -53,7 +53,7 @@ ext {
 idea {
     module {
         name = 'GitHubGameOff'
-        jdkName = '1.8'
+        jdkName = '9.0'
 
         downloadJavadoc = true
         downloadSources = true

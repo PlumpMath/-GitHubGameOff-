@@ -1,61 +1,29 @@
 package de.sakul6499.githubgameoff.game
 
-import de.sakul6499.githubgameoff.engine.GameMain
-import de.sakul6499.githubgameoff.engine.Layer
-import de.sakul6499.githubgameoff.engine.asset.SpriteLoader
+import de.sakul6499.githubgameoff.engine.graphics.Layer
 import de.sakul6499.githubgameoff.game.entity.Player
-import java.awt.Color
 import java.awt.Graphics
-import javax.imageio.ImageIO
 
-object GameLayer: Layer("Game", 0) {
+object GameLayer : Layer("Game", 100) {
     override var isActive: Boolean = true
 
     val player: Player = Player()
 
     init {
-        println("Initializing GameLayer ...")
-        SpriteLoader.registerSprite("basic_tiles", this.javaClass.getResource("/basic_tiles.png"))
-        SpriteLoader.defineTileArray("grass", "basic_tiles", 0, 0, 16, 16, 3)
-        SpriteLoader.defineTileArray("stone", "basic_tiles", 0, 16, 16, 16, 2)
-        SpriteLoader.defineTile("rock", "basic_tiles", 0, 32, 16, 16)
-        SpriteLoader.defineTile("wall", "basic_tiles", 0, 48, 16, 16)
-
-        SpriteLoader.registerSprite("WALL", this.javaClass.getResource("/tiles/Wall.png"))
-        SpriteLoader.defineTile("WALL", "WALL", 0, 0, 256, 256)
-
-        SpriteLoader.registerSprite("Background", this.javaClass.getResource("/tiles/Background.png"))
-        SpriteLoader.defineTile("Background", "Background", 0, 0, 2484, 1200)
-
-        SpriteLoader.registerSprite("tiles", this.javaClass.getResource("/0x72_16x16DungeonTileset.v3.png"))
-        SpriteLoader.defineTile("wall_tiles_0", "tiles", 0, 16, 32, 16)
+        println("Initializing $this ...")
     }
-
-    val wall_edge = ImageIO.read(this.javaClass.getResource("/tiles/wall_edge.png"))
-    val wall_mid = ImageIO.read(this.javaClass.getResource("/tiles/wall_mid.png"))
 
     override fun update(delta: Long, alpha: Long) {
         player.update(delta, alpha)
     }
 
     override fun render(graphics: Graphics) {
-        renderRectangle(graphics, color = Color.BLACK)
+//        // TODO render background once
+//        renderRectangle(graphics, color = Color.BLACK)
 //        graphics.color = Color.BLACK
 //        graphics.fillRect(0, 0, width, height)
 
-        val tw = width / 64
-        for(i in 0 until tw) {
-            if(i == 0 || i == tw) {
-                renderImage(graphics, wall_edge, i * 64, 0, 64 * 2, 64 * 2)
-                println(i)
-            } else {
-                renderImage(graphics, wall_mid, i * 64, 0, 64, 64)
-            }
 
-            renderBox(graphics, i * 64, 0, 64, 64)
-
-//            renderImage(graphics, image, i * 64, height - 96, 64, 64)
-        }
 
 //        for(i in 0..height / 64) {
 //            renderImage(graphics, image, 0, i*64, 64, 64)
