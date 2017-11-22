@@ -1,48 +1,39 @@
 package de.sakul6499.githubgameoff.engine.maths
 
-class Vector2F(var x: Float = 0.0F, var y: Float = 0.0F) {
+class Vector2F(override var x: Float = 0.0F, override var y: Float = 0.0F) : Vector<Float> {
     constructor(other: Vector2F) : this(other.x, other.y)
     constructor(other: Vector2I) : this(other.x.toFloat(), other.y.toFloat())
     constructor(x: Int, y: Int) : this(x.toFloat(), y.toFloat())
 
-    fun add(x: Float, y: Float): Vector2F {
-        this.x += x
-        this.y += y
+    override fun add(x0: Float, y0: Float): Vector2F {
+        this.x += x0
+        this.y += y0
 
         return this
     }
 
-    fun add(other: Vector2F): Vector2F = add(other.x, other.y)
-    fun add(other: Vector2I): Vector2F = add(other.x.toFloat(), other.y.toFloat())
-
-    fun substract(x: Float, y: Float): Vector2F {
-        this.x -= x
-        this.y -= y
+    override fun subtract(x0: Float, y0: Float): Vector2F {
+        this.x -= x0
+        this.y -= y0
 
         return this
     }
-    fun substract(other: Vector2F): Vector2F = substract(other.x, other.y)
-    fun substract(other: Vector2I): Vector2F = substract(other.x.toFloat(), other.y.toFloat())
 
-    fun multiply(x: Float, y: Float): Vector2F {
-        this.x *= x
-        this.y *= y
+    override fun multiply(x0: Float, y0: Float): Vector2F {
+        this.x *= x0
+        this.y *= y0
 
         return this
     }
-    fun multiply(other: Vector2F): Vector2F = multiply(other.x, other.y)
-    fun multiply(other: Vector2I): Vector2F = multiply(other.x.toFloat(), other.y.toFloat())
 
-    fun divide(x: Float, y: Float): Vector2F {
-        this.x /= x
-        this.y /= y
+    override fun divide(x0: Float, y0: Float): Vector2F {
+        this.x /= x0
+        this.y /= y0
 
         return this
     }
-    fun divide(other: Vector2F): Vector2F = divide(other.x, other.y)
-    fun divide(other: Vector2I): Vector2F = divide(other.x.toFloat(), other.y.toFloat())
 
-    fun normalize(): Vector2F {
+    override fun normalize(): Vector2F {
         val length = Math.sqrt((x * x + y * y).toDouble()).toFloat()
         if (length != 0.0F) {
             multiply(1.0F / length, 1.0F / length)
@@ -51,20 +42,20 @@ class Vector2F(var x: Float = 0.0F, var y: Float = 0.0F) {
         return this
     }
 
-    fun distance(x: Float, y: Float): Double = Math.sqrt(((this.x - x) * (this.x - x) + (this.y - y) * (this.y - y)).toDouble())
-    fun distance(other: Vector2F): Double = distance(other.x, other.y)
-    fun distance(other: Vector2I): Double = distance(other.x.toFloat(), other.y.toFloat())
+    override fun distance(x0: Float, y0: Float): Double = Math.sqrt(((this.x - x0) * (this.x - x0) + (this.y - y0) * (this.y - y0)).toDouble())
 
-    fun nullify(): Vector2F {
+    override fun diff(x0: Float, y0: Float): Vector2F = Vector2F(this.x - x0, this.y - y0)
+
+    override fun nullify(): Vector2F {
         this.x = 0.0F
         this.y = 0.0F
 
         return this
     }
 
-    fun isNull(): Boolean = this.x == 0.0F && this.y == 0.0F
+    override fun isNull(): Boolean = this.x == 0.0F && this.y == 0.0F
 
-    fun copy(): Vector2F = Vector2F(x, y)
+    override fun copy(): Vector2F = Vector2F(x, y)
 
     fun getRoundX(): Int = Math.round(x)
     fun getRoundY(): Int = Math.round(y)
@@ -88,6 +79,4 @@ class Vector2F(var x: Float = 0.0F, var y: Float = 0.0F) {
     }
 
     override fun toString(): String = "Vector2F(x=$x, y=$y)"
-
-    fun toVector2I(): Vector2I = Vector2I(x.toInt(), y.toInt())
 }

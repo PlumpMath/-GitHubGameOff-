@@ -4,6 +4,7 @@ import de.sakul6499.githubgameoff.engine.asset.Image
 import de.sakul6499.githubgameoff.engine.asset.Images
 import de.sakul6499.githubgameoff.engine.asset.StagedImage
 import de.sakul6499.githubgameoff.engine.graphics.RenderOnceLayer
+import de.sakul6499.githubgameoff.engine.maths.Vector2I
 import java.awt.Graphics
 import java.util.*
 import javax.imageio.ImageIO
@@ -30,7 +31,10 @@ object BackgroundLayer : RenderOnceLayer("Background", 0) {
         Images.registerImage("floor_mid", Image(ImageIO.read(this.javaClass.getResource("/tiles/floor_mid.png"))))
     }
 
+    fun getValidRange(): Pair<Vector2I, Vector2I> = Pair(Vector2I(64, 64), Vector2I(width - 64, height - 64))
+
     override fun render(graphics: Graphics) {
+        // TODO adjust tiles on screen width / height, not tiles on screen ... [note: update getValidRange() too!]
         val tw = width / 64
         val th = height / 64
         for (w in 0 until tw) {

@@ -5,6 +5,7 @@ import de.sakul6499.githubgameoff.engine.asset.SpriteFont
 import de.sakul6499.githubgameoff.engine.event.EventManager
 import de.sakul6499.githubgameoff.engine.graphics.Screen
 import de.sakul6499.githubgameoff.engine.input.ControllerHandler
+import de.sakul6499.githubgameoff.engine.input.Input
 import de.sakul6499.githubgameoff.engine.input.KeyboardHandler
 import de.sakul6499.githubgameoff.engine.input.MouseHandler
 import de.sakul6499.githubgameoff.engine.state.GameStateManager
@@ -79,16 +80,13 @@ object GameMain {
             }
         })
 
-        // Input Listener
-        frame.addKeyListener(KeyboardHandler.INSTANCE)
-
         // Mouse listener
         frame.addMouseListener(MouseHandler.instance)
-        frame.addMouseWheelListener(MouseHandler.instance)
+//        frame.addMouseWheelListener(MouseHandler.instance)
         frame.addMouseMotionListener(MouseHandler.instance)
 
-        // Controller
-        ControllerHandler
+        // Input
+        frame.addKeyListener(Input)
 
         // ###
         // # Font
@@ -185,7 +183,7 @@ object GameMain {
             println("### EXIT ###")
 
             // Free SDL
-            ControllerHandler.instance.exit()
+            Input.exit()
 
             // Free Frame
             frame.isVisible = false
