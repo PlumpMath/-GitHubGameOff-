@@ -1,7 +1,7 @@
 package de.sakul6499.githubgameoff.engine.graphics
 
 import de.sakul6499.githubgameoff.engine.GameMain
-import de.sakul6499.githubgameoff.engine.asset.SpriteLoader
+import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteLoader
 import java.awt.Color
 import java.awt.Graphics
 import java.util.*

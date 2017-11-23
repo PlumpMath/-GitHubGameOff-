@@ -53,7 +53,17 @@ class Vector2F(override var x: Float = 0.0F, override var y: Float = 0.0F) : Vec
         return this
     }
 
-    override fun isNull(): Boolean = this.x == 0.0F && this.y == 0.0F
+    override fun isNull(x0: Float, y0: Float): Boolean {
+        val x1 = if(x < 0) -x else x
+        val y1 = if(y < 0) -y else y
+
+        val x2 = if(x0 < 0) -x0 else x0
+        val y2 = if(y0 < 0) -y0 else y0
+
+        return x1 < x2 && y1 < y2
+    }
+
+    override fun isNull(): Boolean = isNull(0F, 0F)
 
     override fun copy(): Vector2F = Vector2F(x, y)
 

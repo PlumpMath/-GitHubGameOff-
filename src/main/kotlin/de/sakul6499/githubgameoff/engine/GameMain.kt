@@ -1,7 +1,7 @@
 package de.sakul6499.githubgameoff.engine
 
 import com.google.gson.Gson
-import de.sakul6499.githubgameoff.engine.asset.SpriteFont
+import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteFont
 import de.sakul6499.githubgameoff.engine.event.EventManager
 import de.sakul6499.githubgameoff.engine.graphics.Screen
 import de.sakul6499.githubgameoff.engine.input.ControllerHandler

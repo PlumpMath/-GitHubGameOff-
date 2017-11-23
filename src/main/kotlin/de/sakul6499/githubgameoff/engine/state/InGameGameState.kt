@@ -1,7 +1,7 @@
 package de.sakul6499.githubgameoff.engine.state
 
 import de.sakul6499.githubgameoff.engine.GameMain
-import de.sakul6499.githubgameoff.engine.asset.SpriteFont
+import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteFont
 import de.sakul6499.githubgameoff.engine.gui.Button
 import java.awt.Color
 import java.awt.Graphics

@@ -1,8 +1,8 @@
 package de.sakul6499.githubgameoff.game
 
-import de.sakul6499.githubgameoff.engine.asset.Image
-import de.sakul6499.githubgameoff.engine.asset.Images
-import de.sakul6499.githubgameoff.engine.asset.StagedImage
+import de.sakul6499.githubgameoff.engine.graphics.asset.Image
+import de.sakul6499.githubgameoff.engine.graphics.asset.Images
+import de.sakul6499.githubgameoff.engine.graphics.asset.StagedImage
 import de.sakul6499.githubgameoff.engine.graphics.RenderOnceLayer
 import de.sakul6499.githubgameoff.engine.maths.Vector2I
 import java.awt.Graphics

@@ -1,9 +1,10 @@
 package de.sakul6499.githubgameoff.game.entity
 
-import de.sakul6499.githubgameoff.engine.asset.SpriteFont
+import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteFont
 import de.sakul6499.githubgameoff.engine.graphics.Layer
 import de.sakul6499.githubgameoff.engine.graphics.Screen
 import de.sakul6499.githubgameoff.engine.input.Input
+import de.sakul6499.githubgameoff.engine.maths.Direction
 import de.sakul6499.githubgameoff.engine.maths.Vector2F
 import de.sakul6499.githubgameoff.game.BackgroundLayer
 import java.awt.Color
@@ -39,21 +40,19 @@ object PlayerLayer : Layer("Player", 5, BackgroundLayer.getValidRange().first.x,
         cross = Input.updateFire()
         cross.multiply(64F, 64F)
 
-        if (!cross.isNull()) {
+        if (!cross.isNull(0.25F * 64F)) {
             if (coolDown <= 0) {
                 BulletLayer.bullets.add(BulletLayer.Bullet(position.copy(), cross.copy(), BulletLayer.Bullet.BulletType.NORMAL_RED))
                 coolDown = coolDownTimer
             }
         }
-        coolDown--
+        if (coolDown > 0) coolDown--
     }
 
     override fun render(graphics: Graphics) {
         // Player
         graphics.color = Color.GREEN
         graphics.fillOval(position.x.toInt() - 64 / 2, position.y.toInt() - 64 / 2, 64 / 2, 64 / 2)
-
-        renderText(graphics, "$coolDown", x, y, false, fontWidth = 32, fontHeight = 32, fontType = SpriteFont.FontType.NORMAL, fontColor = SpriteFont.FontColor.BLACK)
 
         // Bullet cross
         if (!cross.isNull()) {

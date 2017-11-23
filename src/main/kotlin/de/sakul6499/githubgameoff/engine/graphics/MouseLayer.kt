@@ -1,6 +1,6 @@
 package de.sakul6499.githubgameoff.engine.graphics
 
-import de.sakul6499.githubgameoff.engine.asset.SpriteLoader
+import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteLoader
 import de.sakul6499.githubgameoff.engine.input.MouseHandler
 import java.awt.Graphics
 

@@ -1,6 +1,6 @@
 package de.sakul6499.githubgameoff.engine.gui
 
-import de.sakul6499.githubgameoff.engine.asset.SpriteFont
+import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteFont
 import java.awt.Graphics
 
 abstract class GUIBasicTextElement(x: Int, y: Int, sizeX: Int, sizeY: Int, var text: String, override var active: Boolean = true) : GUIBasicElement(x, y, sizeX, sizeY, active) {

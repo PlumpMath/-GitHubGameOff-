@@ -1,6 +1,6 @@
 package de.sakul6499.githubgameoff.engine.graphics
 
-import de.sakul6499.githubgameoff.engine.asset.SpriteFont
+import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteFont
 import de.sakul6499.githubgameoff.engine.maths.Vector2I
 import java.awt.Color
 import java.awt.Graphics

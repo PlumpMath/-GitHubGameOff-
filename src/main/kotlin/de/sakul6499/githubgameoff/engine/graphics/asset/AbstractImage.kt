@@ -1,4 +1,4 @@
-package de.sakul6499.githubgameoff.engine.asset
+package de.sakul6499.githubgameoff.engine.graphics.asset
 
 import java.awt.image.BufferedImage
 

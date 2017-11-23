@@ -1,12 +1,12 @@
-package de.sakul6499.githubgameoff.engine.asset
+package de.sakul6499.githubgameoff.engine.graphics.asset
 
 import java.awt.image.BufferedImage
 
-class StagedImage(private var images: Array<Image> = arrayOf()) : AbstractImage() {
+class StagedImage(private var images: Array<AbstractImage> = arrayOf()) : AbstractImage() {
 
     companion object {
         fun CreateRotationBasedStagedImage(vararg images: BufferedImage, thetaPerImage: Double): StagedImage {
-            var arr: Array<Image> = arrayOf()
+            var arr: Array<AbstractImage> = arrayOf()
             for (i in 0 until images.size) {
                 arr += Image(images[i]).rotate(thetaPerImage * i)
             }
@@ -15,7 +15,7 @@ class StagedImage(private var images: Array<Image> = arrayOf()) : AbstractImage(
         }
 
         fun CreateRotationBasedStagedImage(image: BufferedImage, loops: Int, thetaPerImage: Double): StagedImage {
-            var arr: Array<Image> = arrayOf()
+            var arr: Array<AbstractImage> = arrayOf()
             for (i in 0 until loops) {
                 arr += Image(image).rotate(thetaPerImage * i)
             }
@@ -26,7 +26,7 @@ class StagedImage(private var images: Array<Image> = arrayOf()) : AbstractImage(
 
     override fun getImage(): BufferedImage = getImage(0)
     fun getImage(index: Int): BufferedImage = images[index].getImage()
-    fun getImages(): Array<Image> = images
+    fun getImages(): Array<AbstractImage> = images
 
     fun stages(): Int = images.size
 
