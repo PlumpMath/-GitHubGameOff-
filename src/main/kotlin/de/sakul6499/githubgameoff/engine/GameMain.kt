@@ -1,19 +1,15 @@
 package de.sakul6499.githubgameoff.engine
 
 import com.google.gson.Gson
-import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteFont
-import de.sakul6499.githubgameoff.engine.event.EventManager
 import de.sakul6499.githubgameoff.engine.graphics.Screen
+import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteFont
 import de.sakul6499.githubgameoff.engine.input.ControllerHandler
 import de.sakul6499.githubgameoff.engine.input.Input
 import de.sakul6499.githubgameoff.engine.input.KeyboardHandler
 import de.sakul6499.githubgameoff.engine.input.MouseHandler
 import de.sakul6499.githubgameoff.engine.state.GameStateManager
 import de.sakul6499.githubgameoff.engine.state.InGameGameState
-import java.awt.Dimension
-import java.awt.Graphics2D
-import java.awt.Point
-import java.awt.Toolkit
+import java.awt.*
 import java.awt.event.KeyEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -32,6 +28,8 @@ object GameMain {
     var UPS: Int = 0
     var FPS: Int = 0
     private var gameLoop: Thread
+
+    private var pause: Boolean = false
 
     init {
         println("CWD: ${cwd.absolutePath} / ${cwd.canonicalPath}")
@@ -69,15 +67,80 @@ object GameMain {
         frame.defaultCloseOperation = JFrame.DISPOSE_ON_CLOSE
         frame.isUndecorated = true
         frame.cursor = Toolkit.getDefaultToolkit().createCustomCursor(Toolkit.getDefaultToolkit().getImage(""), Point(0, 0), "emptyCursor")
+//        frame.addWindowFocusListener(object: WindowFocusListener {
+//            override fun windowGainedFocus(e: WindowEvent?) {
+//                unpauseGame()
+//            }
+//
+//            override fun windowLostFocus(e: WindowEvent?) {
+//                pauseGame()
+//            }
+//        })
+//        frame.addWindowStateListener { e: WindowEvent ->
+//            println("EVENT: $e")
+//            when (e.newState) {
+//                WindowEvent.WINDOW_DEICONIFIED, WindowEvent.WINDOW_GAINED_FOCUS -> unpauseGame()
+//                WindowEvent.WINDOW_ICONIFIED, WindowEvent.WINDOW_LOST_FOCUS -> pauseGame()
+//            }
+//        }
+//        frame.addWindowStateListener(object: WindowStateListener {
+//            override fun windowStateChanged(e: WindowEvent?) {
+//                println(e)
+//            }
+//        })
 
         // ###
         // # Listeners
         // ###
         println("Setting up listeners ...")
         frame.addWindowListener(object : WindowAdapter() {
-            override fun windowClosing(e: WindowEvent?) {
-                stop()
+//            override fun windowClosing(e: WindowEvent?) {
+//                stop()
+//            }
+//
+//            override fun windowGainedFocus(e: WindowEvent?) {
+//                unpauseGame()
+//            }
+
+            override fun windowDeiconified(e: WindowEvent?) {
+//                unpauseGame()
+//                println("B")
+
+
+                // TODO broke
+                unpauseGame()
             }
+
+//            override fun windowActivated(e: WindowEvent?) {
+//                unpauseGame()
+//            }
+//
+//            override fun windowDeactivated(e: WindowEvent?) {
+//                pauseGame()
+//            }
+
+            override fun windowIconified(e: WindowEvent?) {
+                if (!pause) pauseGame()
+//                println("A")
+            }
+
+//            override fun windowLostFocus(e: WindowEvent?) {
+//                pauseGame()
+//            }
+
+
+//
+//            override fun windowStateChanged(e: WindowEvent?) {
+//                println("Event: $e")
+//            }
+
+//            override fun windowClosed(e: WindowEvent?) {
+//                super.windowClosed(e)
+//            }
+//
+//            override fun windowOpened(e: WindowEvent?) {
+//                super.windowOpened(e)
+//            }
         })
 
         // Mouse listener
@@ -111,71 +174,70 @@ object GameMain {
             var currentUPS = 0
             var currentFPS = 0
 
+            var alpha: Long
+
             while (!Thread.currentThread().isInterrupted) {
                 val delta = System.nanoTime() - lastTime
                 lastTime = System.nanoTime()
                 lag += delta
 
-                // ###
-                // # Handle Events
-                // ###
-                var alpha = lag / timeStep
-                // Controller
-                ControllerHandler.instance.update(delta, alpha)
+                if (!pause) {
+                    while (lag >= timeStep) {
+                        lag -= timeStep
+                        alpha = lag / timeStep
 
-                // Update events
-                EventManager.instance.update(delta, alpha)
+                        // ###
+                        // # Update
+                        // ###
+                        // Controller
+                        ControllerHandler.instance.update(delta, alpha)
 
-                // TODO: move to Event?
-                Screen.setDebugRendering(KeyboardHandler.IsKeyPressed(KeyEvent.VK_CONTROL) && KeyboardHandler.IsKeyPressed(KeyEvent.VK_ALT))
+                        // Update events
+//                    EventManager.instance.update(delta, alpha)
 
-                while (lag >= timeStep) {
-                    lag -= timeStep
-                    alpha = lag / timeStep
+                        Screen.setDebugRendering(KeyboardHandler.IsKeyPressed(KeyEvent.VK_CONTROL) && KeyboardHandler.IsKeyPressed(KeyEvent.VK_ALT))
+
+                        // Update screen
+                        Screen.update(delta, alpha)
+
+                        currentUPS++
+                    }
 
                     // ###
-                    // # Update
+                    // # Render
                     // ###
-                    // Update screen
-                    Screen.update(delta, alpha)
+                    // Buffer Strategy
+                    if (frame.bufferStrategy == null) {
+                        println("Creating buffer strategy!")
+                        frame.createBufferStrategy(2)
+                    }
 
-                    currentUPS++
-                }
+                    // Graphics
+                    val graphics: Graphics2D = frame.bufferStrategy.drawGraphics as Graphics2D
 
-                // ###
-                // # Render
-                // ###
-                // Buffer Strategy
-                if (frame.bufferStrategy == null) {
-                    println("Creating buffer strategy!")
-                    frame.createBufferStrategy(2)
-                }
+                    // Clear screen
+                    graphics.clearRect(0, 0, gameConfig.width, gameConfig.height)
 
-                // Graphics
-                val graphics: Graphics2D = frame.bufferStrategy.drawGraphics as Graphics2D
+                    // Render screen
+                    Screen.render(graphics)
 
-                // Clear screen
-                graphics.clearRect(0, 0, gameConfig.width, gameConfig.height)
+                    // Finish up
+                    graphics.dispose()
+                    frame.bufferStrategy.show()
 
-                // Render screen
-                Screen.render(graphics)
+                    currentFPS++
 
-                // Finish up
-                graphics.dispose()
-                frame.bufferStrategy.show()
+                    if (System.currentTimeMillis() - lastTimer >= 1000) {
+                        lastTimer += 1000
 
-                currentFPS++
+                        UPS = currentUPS
+                        FPS = currentFPS
 
-                if (System.currentTimeMillis() - lastTimer >= 1000) {
-                    lastTimer += 1000
+                        frame.title = "$title [UPS $UPS | $FPS FPS]"
 
-                    UPS = currentUPS
-                    FPS = currentFPS
-
-                    frame.title = "$title [UPS $UPS | $FPS FPS]"
-
-                    currentUPS = 0
-                    currentFPS = 0
+                        currentUPS = 0
+                        currentFPS = 0
+                    }
                 }
             }
 
@@ -207,5 +269,26 @@ object GameMain {
 
         frame.isVisible = false
         gameLoop.interrupt()
+    }
+
+    fun pauseGame(minimize: Boolean = false) {
+        if (!pause) {
+            println("Pause game!")
+            pause = true
+
+            if (minimize) frame.extendedState = Frame.ICONIFIED
+        }
+    }
+
+    fun unpauseGame() {
+        if (pause) {
+            println("Unpause game!")
+            pause = false
+
+            if (frame.extendedState == Frame.ICONIFIED) {
+                frame.extendedState = Frame.NORMAL
+                frame.requestFocus()
+            }
+        }
     }
 }

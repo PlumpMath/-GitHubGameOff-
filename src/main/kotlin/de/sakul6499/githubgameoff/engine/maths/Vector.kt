@@ -48,6 +48,7 @@ interface Vector<T : Number> {
      * @param t0 tolerance
      */
     fun isNull(t0: T): Boolean = isNull(t0, t0)
+
     fun isNull(x0: T, y0: T): Boolean
     fun isNull(): Boolean
     fun isNotNull(): Boolean = !isNull()

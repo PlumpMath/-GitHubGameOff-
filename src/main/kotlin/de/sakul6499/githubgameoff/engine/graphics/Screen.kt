@@ -52,7 +52,8 @@ object Screen : Updateable, Renderable {
             if (it is Layer) {
                 it.render(graphics)
             } else {
-                it.renderImage(graphics, (it as RenderOnceLayer).layer!!)
+                // NOTE: using 'BasicLayer::renderImage', will translate the image and offset it by that!
+                graphics.drawImage((it as RenderOnceLayer).layer!!, 0, 0, GetWidth(), GetHeight(), null)
             }
         }
     }

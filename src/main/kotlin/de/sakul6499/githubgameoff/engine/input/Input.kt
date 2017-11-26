@@ -14,7 +14,7 @@ import java.awt.event.KeyListener
  * 3. Keyboard
  */
 object Input : KeyListener {
-    private var inputConfigurations: InputConfig = Engine.GetJSONConfigOrCreate("Input", InputConfig::class.java, InputConfig())
+    private var inputConfigurations: InputConfig = Engine.getJSONConfigOrCreate("Input", InputConfig::class.java, InputConfig())
 
     private val controllerManager: ControllerManager = ControllerManager()
 
@@ -43,7 +43,7 @@ object Input : KeyListener {
         }
     }
 
-    fun updateMovement(): Vector2F {
+    fun updateMovement(tolerance: Float = 0.25F): Vector2F {
         val result = Vector2F()
 
         if (inputConfigurations.moveUsesControllerAxis()) {
@@ -88,7 +88,7 @@ object Input : KeyListener {
             }
         }
 
-        if (result.isNull() && inputConfigurations.moveUsesControllerButtons()) {
+        if (result.isNull(tolerance) && inputConfigurations.moveUsesControllerButtons()) {
             controllerManager.update()
             if (controllerManager.numControllers > 0) {
                 for (i in 0..controllerManager.numControllers) {
@@ -134,7 +134,7 @@ object Input : KeyListener {
             }
         }
 
-        if (result.isNull() && inputConfigurations.moveUsesKeyboard()) {
+        if (result.isNull(tolerance) && inputConfigurations.moveUsesKeyboard()) {
             if (inputConfigurations.MOVE_UP.keys.any { keyboardMap.get(it.keyCode)!! }) result.y = -1F
             if (inputConfigurations.MOVE_DOWN.keys.any { keyboardMap.get(it.keyCode)!! }) result.y = 1F
             if (inputConfigurations.MOVE_LEFT.keys.any { keyboardMap.get(it.keyCode)!! }) result.x = -1F
@@ -144,7 +144,7 @@ object Input : KeyListener {
         return result
     }
 
-    fun updateFire(): Vector2F {
+    fun updateFire(tolerance: Float = 0.25F): Vector2F {
         val result = Vector2F()
 
         if (inputConfigurations.fireUsesControllerAxis()) {
@@ -189,7 +189,7 @@ object Input : KeyListener {
             }
         }
 
-        if (result.isNull() && inputConfigurations.fireUsesControllerButtons()) {
+        if (result.isNull(tolerance) && inputConfigurations.fireUsesControllerButtons()) {
             controllerManager.update()
             if (controllerManager.numControllers > 0) {
                 for (i in 0..controllerManager.numControllers) {
@@ -235,7 +235,7 @@ object Input : KeyListener {
             }
         }
 
-        if (result.isNull() && inputConfigurations.fireUsesKeyboard()) {
+        if (result.isNull(tolerance) && inputConfigurations.fireUsesKeyboard()) {
             if (inputConfigurations.FIRE_UP.keys.any { keyboardMap.get(it.keyCode)!! }) result.y = -1F
             if (inputConfigurations.FIRE_DOWN.keys.any { keyboardMap.get(it.keyCode)!! }) result.y = 1F
             if (inputConfigurations.FIRE_LEFT.keys.any { keyboardMap.get(it.keyCode)!! }) result.x = -1F

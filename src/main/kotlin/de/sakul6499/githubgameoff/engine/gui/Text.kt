@@ -1,7 +1,7 @@
 package de.sakul6499.githubgameoff.engine.gui
 
-import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteFont
 import de.sakul6499.githubgameoff.engine.graphics.Renderable
+import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteFont
 import java.awt.Graphics
 
 open class Text(var x: Int, var y: Int, _text: String, var fontColor: SpriteFont.FontColor = SpriteFont.FontColor.WHITE, var fontType: SpriteFont.FontType = SpriteFont.FontType.NORMAL, var fontWidth: Int = SpriteFont.tileDimension, var fontHeight: Int = SpriteFont.tileDimension, var fontVerticalSpacing: Int = fontWidth / 2) : Renderable {

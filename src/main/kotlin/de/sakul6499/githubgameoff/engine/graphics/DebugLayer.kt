@@ -6,7 +6,7 @@ import java.awt.Color
 import java.awt.Graphics
 import java.util.*
 
-class DebugLayer : Layer("Debug", 9999, y = 12) {
+class DebugLayer : Layer("Debug", 9999) {
     override var isActive: Boolean = false
 
     private var lastDelta: Long = 0L
@@ -43,9 +43,9 @@ class DebugLayer : Layer("Debug", 9999, y = 12) {
     }
 
     override fun render(graphics: Graphics) {
-        renderRectangle(graphics, x, y, width, height)
-        renderText(graphics, "DEBUG", width / 2, height / 2, centered = true)
-        renderImage(graphics, SpriteLoader.createPlaceholderImage(), (width / 2) - 64 / 2, (height - (height / 4)) - 64 / 2, 64, 64)
+        renderRectangle(graphics, getStartX(), getStartY(), getWidth(), getHeight())
+        renderText(graphics, "DEBUG", getWidth() / 2, getHeight() / 2, centered = true)
+        renderImage(graphics, SpriteLoader.createPlaceholderImage(), (getWidth() / 2) - 64 / 2, (getHeight() - (getHeight() / 4)) - 64 / 2, 64, 64)
 
         renderText(graphics, "UPS: ${GameMain.UPS}", fontWidth = 32, fontHeight = 32)
         renderText(graphics, "FPS: ${GameMain.FPS}", y = 32, fontWidth = 32, fontHeight = 32)
@@ -57,13 +57,13 @@ class DebugLayer : Layer("Debug", 9999, y = 12) {
             val fpsEntry = fpsDia[i]
             val upsEntry = upsDia[i]
 
-            renderRectangle(graphics, 32 + i * diaSize, height - fpsEntry, diaSize, fpsEntry, Color.GREEN)
-            renderRectangle(graphics, width - 32 - i * diaSize, height - upsEntry, diaSize, upsEntry, Color.ORANGE)
+            renderRectangle(graphics, 32 + i * diaSize, getHeight() - fpsEntry, diaSize, fpsEntry, Color.GREEN)
+            renderRectangle(graphics, getWidth() - 32 - i * diaSize, getHeight() - upsEntry, diaSize, upsEntry, Color.ORANGE)
 
             for (a in 0 until maxValue) {
                 if (a % 50 == 0) {
-                    renderRectangle(graphics, 32, height - a, diaLimit * diaSize, 1, Color.RED)
-                    renderRectangle(graphics, width - 32 - diaLimit * diaSize, height - a, (diaLimit + 1) * diaSize, 1, Color.RED)
+                    renderRectangle(graphics, 32, getHeight() - a, diaLimit * diaSize, 1, Color.RED)
+                    renderRectangle(graphics, getWidth() - 32 - diaLimit * diaSize, getHeight() - a, (diaLimit + 1) * diaSize, 1, Color.RED)
                 }
             }
         }
