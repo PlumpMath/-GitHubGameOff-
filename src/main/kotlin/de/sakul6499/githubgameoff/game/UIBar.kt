@@ -29,7 +29,7 @@ object UIBar : Layer("MenuUI", 1, Vector2I(0, 0), Vector2I(Screen.GetWidth(), 48
             hover = vb.isInBox(Vector2I(MouseHandler.MousePosition.x, MouseHandler.MousePosition.y))
 
             if (hover && MouseHandler.MouseButtonLeftPressed) {
-                GameMain.pauseGame(true)
+                GameMain.pauseGame()
             }
         }
 

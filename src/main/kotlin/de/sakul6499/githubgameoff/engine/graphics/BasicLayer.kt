@@ -16,7 +16,7 @@ abstract class BasicLayer(val name: String, internal var order: Int, internal va
     fun getWidth(): Int = v1.x - v0.x
     fun getHeight(): Int = v1.y - v0.y
     fun getStartX(): Int = v0.x
-    fun getStartY(): Int = v0.y
+    fun getStartY(): Int = Screen.offset + v0.y
     fun getEndX(): Int = v1.x
     fun getEndY(): Int = v1.y
 

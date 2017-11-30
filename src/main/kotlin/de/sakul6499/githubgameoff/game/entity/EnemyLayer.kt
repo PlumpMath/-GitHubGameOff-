@@ -40,8 +40,8 @@ object EnemyLayer : Layer("Enemy", PlayerLayer.order + 1) {
             if (it.health <= 0) {
                 enemies.remove(it)
             } else it.update(delta, alpha)
-//            println(it.direction)
-//            num = when(it.direction) {
+//            println(it.movement)
+//            num = when(it.movement) {
 //                Direction.NULL -> 0
 //
 //                Direction.LEFT -> 0
@@ -61,7 +61,7 @@ object EnemyLayer : Layer("Enemy", PlayerLayer.order + 1) {
 //                if (stage > 1) stage = 0
 //            }
 
-//            it.position.add(it.direction.copy().multiply(it.type.speed, it.type.speed))
+//            it.position.add(it.movement.copy().multiply(it.type.speed, it.type.speed))
 //            if(!Maths.isInAABB(it.position.x.toInt(), it.position.y.toInt(), BackgroundLayer.getValidRange().first.x, BackgroundLayer.getValidRange().first.y, BackgroundLayer.getValidRange().second.x, BackgroundLayer.getValidRange().second.y)) {
 //                bullets.remove(it)
 //            } else {

@@ -89,4 +89,6 @@ class Vector2F(override var x: Float = 0.0F, override var y: Float = 0.0F) : Vec
     }
 
     override fun toString(): String = "Vector2F(x=$x, y=$y)"
+
+    fun toVector2I(): Vector2I = Vector2I(getRoundX(), getRoundY())
 }

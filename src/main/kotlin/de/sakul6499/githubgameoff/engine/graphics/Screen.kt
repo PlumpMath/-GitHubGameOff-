@@ -7,6 +7,13 @@ object Screen : Updateable, Renderable {
     fun GetWidth(): Int = GameMain.gameConfig.width
     fun GetHeight(): Int = GameMain.gameConfig.height
 
+    var offset: Int = 0
+        set(value) {
+            if (field > 0) throw IllegalStateException("Already set!")
+
+            field = value
+        }
+
     private val layers: MutableMap<Int, BasicLayer> = mutableMapOf()
 
     private val debugLayer: DebugLayer = DebugLayer()

@@ -9,7 +9,7 @@ import java.awt.Graphics
 import java.util.*
 import javax.imageio.ImageIO
 
-object BackgroundLayer : RenderOnceLayer("Background", 0, v0 = Vector2I(0, 48)) {
+object BackgroundLayer : RenderOnceLayer("Background", 0, v0 = Vector2I(0, 0)) {
     override val isActive: Boolean = true
 
     init {

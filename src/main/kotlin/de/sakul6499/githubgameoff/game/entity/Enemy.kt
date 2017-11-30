@@ -47,8 +47,11 @@ class Enemy(val position: Vector2F, private val size: Int) : Updateable, Rendera
         updateMovement()
     }
 
+    fun GetMidPosition(): Vector2F = Vector2F(position.x + size / 2, position.y + size / 2)
+
     private fun updateMovement() {
-        val diff = PlayerLayer.GetMidPosition().diff(position)
+        val diff = PlayerLayer.player.position.diff(GetMidPosition())
+//        diff.subtract((size / 2).toFloat())
 
         calculateFacing(diff)
 

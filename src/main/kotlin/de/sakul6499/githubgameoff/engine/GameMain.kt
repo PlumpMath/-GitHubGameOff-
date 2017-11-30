@@ -9,7 +9,10 @@ import de.sakul6499.githubgameoff.engine.input.KeyboardHandler
 import de.sakul6499.githubgameoff.engine.input.MouseHandler
 import de.sakul6499.githubgameoff.engine.state.GameStateManager
 import de.sakul6499.githubgameoff.engine.state.InGameGameState
-import java.awt.*
+import java.awt.Dimension
+import java.awt.Graphics2D
+import java.awt.Point
+import java.awt.Toolkit
 import java.awt.event.KeyEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -65,7 +68,7 @@ object GameMain {
         frame.setLocationRelativeTo(null)
         frame.isLocationByPlatform = false
         frame.defaultCloseOperation = JFrame.DISPOSE_ON_CLOSE
-        frame.isUndecorated = true
+//        frame.isUndecorated = true
         frame.cursor = Toolkit.getDefaultToolkit().createCustomCursor(Toolkit.getDefaultToolkit().getImage(""), Point(0, 0), "emptyCursor")
 //        frame.addWindowFocusListener(object: WindowFocusListener {
 //            override fun windowGainedFocus(e: WindowEvent?) {
@@ -94,22 +97,23 @@ object GameMain {
         // ###
         println("Setting up listeners ...")
         frame.addWindowListener(object : WindowAdapter() {
-//            override fun windowClosing(e: WindowEvent?) {
-//                stop()
-//            }
+            override fun windowClosing(e: WindowEvent) {
+                pauseGame()
+                stop()
+            }
 //
 //            override fun windowGainedFocus(e: WindowEvent?) {
 //                unpauseGame()
 //            }
 
-            override fun windowDeiconified(e: WindowEvent?) {
+//            override fun windowDeiconified(e: WindowEvent?) {
+////                unpauseGame()
+////                println("B")
+//
+//
+//                // TODO broke
 //                unpauseGame()
-//                println("B")
-
-
-                // TODO broke
-                unpauseGame()
-            }
+//            }
 
 //            override fun windowActivated(e: WindowEvent?) {
 //                unpauseGame()
@@ -119,10 +123,10 @@ object GameMain {
 //                pauseGame()
 //            }
 
-            override fun windowIconified(e: WindowEvent?) {
-                if (!pause) pauseGame()
-//                println("A")
-            }
+//            override fun windowIconified(e: WindowEvent?) {
+//                if (!pause) pauseGame()
+////                println("A")
+//            }
 
 //            override fun windowLostFocus(e: WindowEvent?) {
 //                pauseGame()
@@ -166,6 +170,9 @@ object GameMain {
         // # Game Loop
         // ###
         gameLoop = Thread({
+            // Set screen offset by title bar
+            Screen.offset = frame.insets.top
+
             val timeStep = 1000000000 / 60
             var lastTime = System.nanoTime()
             var lastTimer = System.currentTimeMillis()
@@ -271,12 +278,13 @@ object GameMain {
         gameLoop.interrupt()
     }
 
-    fun pauseGame(minimize: Boolean = false) {
+    //    fun pauseGame(minimize: Boolean = false) {
+    fun pauseGame() {
         if (!pause) {
             println("Pause game!")
             pause = true
 
-            if (minimize) frame.extendedState = Frame.ICONIFIED
+//            if (minimize) frame.extendedState = Frame.ICONIFIED
         }
     }
 
@@ -285,10 +293,10 @@ object GameMain {
             println("Unpause game!")
             pause = false
 
-            if (frame.extendedState == Frame.ICONIFIED) {
-                frame.extendedState = Frame.NORMAL
-                frame.requestFocus()
-            }
+//            if (frame.extendedState == Frame.ICONIFIED) {
+//                frame.extendedState = Frame.NORMAL
+//                frame.requestFocus()
+//            }
         }
     }
 }
