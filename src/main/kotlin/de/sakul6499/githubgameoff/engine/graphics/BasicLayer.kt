@@ -37,7 +37,7 @@ abstract class BasicLayer(val name: String, internal var order: Int, internal va
 
     fun renderBox(graphics: Graphics, x: Int = getStartX(), y: Int = getStartY(), width: Int = getWidth(), height: Int = getHeight(), color: Color = Color.RED) {
         val position = translate(x, y, width, height)
-        Engine.renderBox(graphics, position.x, position.y, width, height)
+        Engine.renderBox(graphics, position.x, position.y, width, height, color)
     }
 
     internal fun translate(x: Int, y: Int, width: Int = getWidth(), height: Int = getHeight()): Vector2I {
