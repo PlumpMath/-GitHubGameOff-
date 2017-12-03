@@ -1,6 +1,5 @@
 package de.sakul6499.githubgameoff.engine
 
-import com.google.gson.Gson
 import de.sakul6499.githubgameoff.engine.graphics.Screen
 import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteFont
 import de.sakul6499.githubgameoff.engine.input.ControllerHandler
@@ -9,6 +8,7 @@ import de.sakul6499.githubgameoff.engine.input.KeyboardHandler
 import de.sakul6499.githubgameoff.engine.input.MouseHandler
 import de.sakul6499.githubgameoff.engine.state.GameStateManager
 import de.sakul6499.githubgameoff.engine.state.InGameGameState
+import de.sakul6499.githubgameoff.game.GameConfig
 import java.awt.Dimension
 import java.awt.Graphics2D
 import java.awt.Point
@@ -21,8 +21,7 @@ import javax.swing.JFrame
 
 object GameMain {
     private val cwd: File = File(".")
-    private val gameConfigFile: File = File(cwd, "settings.json")
-    var gameConfig: GameConfig
+    var gameConfig: GameConfig = Engine.getJSONConfigOrCreate("config", GameConfig::class.java, GameConfig())
         private set
 
     private val title: String = "#GitHubGameOff"
@@ -36,23 +35,12 @@ object GameMain {
 
     init {
         println("CWD: ${cwd.absolutePath} / ${cwd.canonicalPath}")
-        if (!gameConfigFile.exists()) {
-            println("Warning: No game config found [${gameConfigFile.absolutePath} / ${gameConfigFile.canonicalPath}]")
-            println("Creating default one ...")
 
-            gameConfig = GameConfig()
-            gameConfigFile.writeText(Gson().toJson(gameConfig))
-        } else {
-            gameConfig = Gson().fromJson(gameConfigFile.readText(), GameConfig::class.java)
-        }
-        println("Game Config:")
-        println(gameConfig)
-
-        if (!gameConfig.validate()) {
+        val errors = gameConfig.validate()
+        if (errors.isNotEmpty()) {
             println("Game Config is invalid!")
-            gameConfig.validationResultErrors.forEach {
-                println(" -> ${it.text}")
-            }
+            println("Errors: ")
+            errors.forEach { println(it) }
 
             throw IllegalStateException("Game Config is invalid!")
         }

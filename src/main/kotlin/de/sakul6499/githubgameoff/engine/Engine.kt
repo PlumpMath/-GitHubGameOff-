@@ -2,6 +2,7 @@ package de.sakul6499.githubgameoff.engine
 
 import com.google.gson.Gson
 import de.sakul6499.githubgameoff.engine.graphics.asset.SpriteFont
+import org.lwjgl.glfw.GLFWErrorCallback
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Image
@@ -9,6 +10,8 @@ import java.io.File
 
 object Engine {
     val gameName: String = "GitHubGameOff"
+
+    /* Config */
 
     fun getConfigDirectory(): File {
         val systemName = System.getProperty("os.name").toLowerCase()

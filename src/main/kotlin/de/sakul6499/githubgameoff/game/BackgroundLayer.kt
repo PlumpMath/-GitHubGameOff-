@@ -7,6 +7,7 @@ import de.sakul6499.githubgameoff.engine.graphics.asset.StagedImage
 import de.sakul6499.githubgameoff.engine.maths.BoxVector
 import de.sakul6499.githubgameoff.engine.maths.Vector2F
 import de.sakul6499.githubgameoff.engine.maths.Vector2I
+import de.sakul6499.githubgameoff.game.entity.renderBox
 import java.awt.Color
 import java.awt.Graphics
 import java.util.*
@@ -15,11 +16,19 @@ import javax.imageio.ImageIO
 object BackgroundLayer : RenderOnceLayer("Background", 0, v0 = Vector2I(0, 0)) {
     override val isActive: Boolean = true
 
-    val tileSize = 64
-    val tileWidth = getWidth() / tileSize
-    val tileHeight = getHeight() / tileSize
+    val amountTilesX = 21
+    val amountTilesY = 9
 
-    fun getPlayableArea(): BoxVector<Vector2F> = BoxVector(Vector2F(getStartX() + tileSize, getStartY() + tileSize), Vector2F(getEndX() - tileSize, getEndY() - tileSize))
+    val tileSizeX = getWidth() / amountTilesX
+    val tileSizeY = getHeight() / amountTilesY
+
+//    val tileSize = 64
+//    val amountTilesX = getWidth() / tileSize
+//    val amountTilesY = getHeight() / tileSize
+
+    // TODO: left
+
+    fun getPlayableArea(): BoxVector<Vector2F> = BoxVector(Vector2F(getStartX() + tileSizeX, getStartY() + tileSizeY), Vector2F(getEndX() - tileSizeX, getEndY() - tileSizeY))
 
     init {
         println("Initializing $this ...")
@@ -41,50 +50,53 @@ object BackgroundLayer : RenderOnceLayer("Background", 0, v0 = Vector2I(0, 0)) {
     }
 
     override fun render(graphics: Graphics) {
-        for (w in 0 until tileWidth) {
-            for (h in 0 until tileHeight) {
+        for (w in 0 until amountTilesX) {
+            for (h in 0 until amountTilesY) {
                 val w0 = w == 0
-                val w1 = w == tileWidth - 1
+                val w1 = w == amountTilesX - 1
                 val h0 = h == 0
-                val h1 = h == tileHeight - 1
+                val h1 = h == amountTilesY - 1
 
                 if (w0 && h0) {
-                    renderImage(graphics, Images.getImage("wall_edge", 0), w * tileSize, h * tileSize, tileSize, tileSize)
+                    renderImage(graphics, Images.getImage("wall_edge", 0), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
+                    graphics.renderBox(w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
+                    println("${w * tileSizeX} ${h * tileSizeY}")
                 } else if (w0 && h1) {
-                    renderImage(graphics, Images.getImage("wall_edge", 3), w * tileSize, h * tileSize, tileSize, tileSize)
+                    renderImage(graphics, Images.getImage("wall_edge", 3), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
                 } else if (w1 && h0) {
-                    renderImage(graphics, Images.getImage("wall_edge", 1), w * tileSize, h * tileSize, tileSize, tileSize)
+                    renderImage(graphics, Images.getImage("wall_edge", 1), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
                 } else if (w1 && h1) {
-                    renderImage(graphics, Images.getImage("wall_edge", 2), w * tileSize, h * tileSize, tileSize, tileSize)
+                    renderImage(graphics, Images.getImage("wall_edge", 2), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
                 } else if (w0) {
-                    renderImage(graphics, Images.getImage("wall_mid", 3), w * tileSize, h * tileSize, tileSize, tileSize)
+                    renderImage(graphics, Images.getImage("wall_mid", 3), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
                 } else if (w1) {
-                    renderImage(graphics, Images.getImage("wall_mid", 1), w * tileSize, h * tileSize, tileSize, tileSize)
+                    renderImage(graphics, Images.getImage("wall_mid", 1), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
                 } else if (h0) {
-                    renderImage(graphics, Images.getImage("wall_mid", 0), w * tileSize, h * tileSize, tileSize, tileSize)
+                    renderImage(graphics, Images.getImage("wall_mid", 0), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
                 } else if (h1) {
-                    renderImage(graphics, Images.getImage("wall_mid", 2), w * tileSize, h * tileSize, tileSize, tileSize)
-                } else if (w == tileSize) {
-                    renderImage(graphics, Images.getImage("wall_mid", 3), w * tileSize, h * tileSize, tileSize, tileSize)
-                } else if (w == (tileWidth - tileSize) / tileSize - 1) {
-                    renderImage(graphics, Images.getImage("wall_mid", 1), w * tileSize, h * tileSize, tileSize, tileSize)
-                } else if (h == tileSize) {
-                    renderImage(graphics, Images.getImage("wall_mid", 0), w * tileSize, h * tileSize, tileSize, tileSize)
-                } else if (h == (tileHeight - tileSize) / tileSize - 1) {
-                    renderImage(graphics, Images.getImage("wall_mid", 2), w * tileSize, h * tileSize, tileSize, tileSize)
+                    renderImage(graphics, Images.getImage("wall_mid", 2), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
+                } else if (w == tileSizeX) {
+                    renderImage(graphics, Images.getImage("wall_mid", 3), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
+                } else if (w == (amountTilesX - tileSizeX) / tileSizeX - 1) {
+                    renderImage(graphics, Images.getImage("wall_mid", 1), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
+                } else if (h == tileSizeY) {
+                    renderImage(graphics, Images.getImage("wall_mid", 0), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
+                } else if (h == (amountTilesY - tileSizeY) / tileSizeY - 1) {
+                    renderImage(graphics, Images.getImage("wall_mid", 2), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
                 } else {
-                    renderImage(graphics, Images.getImage("floor", Random().nextInt(4)), w * tileSize, h * tileSize, tileSize, tileSize)
+                    renderImage(graphics, Images.getImage("floor", Random().nextInt(4)), w * tileSizeX, h * tileSizeY, tileSizeX, tileSizeY)
                 }
             }
         }
 
-        renderImage(graphics, Images.getImage("floor_mid"), getWidth() / 2 - (tileSize * 8) / 2, getHeight() / 2 - (46 * 8) / 2, (tileSize * 8), (46 * 8))
+        renderImage(graphics, Images.getImage("floor_mid"), getWidth() / 2 - (tileSizeX * 8) / 2, getHeight() / 2 - (46 * 8) / 2, (tileSizeY * 8), (46 * 8))
 
         val b = getPlayableArea()
         println(b)
         println(getEndX())
         println(getEndY())
-        graphics.color = Color.RED
-        graphics.fillRect(b.v0.x.toInt(), b.v0.y.toInt(), b.v1.x.toInt(), b.v1.y.toInt())
+//        graphics.color = Color.RED
+//        graphics.fillRect(b.v0.x.toInt(), b.v0.y.toInt(), b.v1.x.toInt(), b.v1.y.toInt())
+        graphics.renderBox(b.v0.toVector2I(), b.v1.toVector2I(), Color.RED)
     }
 }
